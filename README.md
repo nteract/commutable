@@ -2,8 +2,12 @@
 
 Immutable notebook document model, operations, and history for Jupyter/IPython.
 
-Relies on [Immutable.js](https://facebook.github.io/immutable-js/) for the
-underlying data structure used for the notebook.
+> #### com·mut·a·ble
+> /kəˈmyo͞otəbəl/
+> 1. (of a place or journey) allowing regular commuting to and from work.
+> 2. **capable of being exchanged or converted.**
+
+The underlying data structure is [immutable](https://facebook.github.io/immutable-js/). This library, `commutable`, allows for exchange and conversion.
 
 ## Inspired by
 
@@ -15,3 +19,8 @@ underlying data structure used for the notebook.
 
 Provide utilities for working with IPython/Jupyter notebooks under their common
 operations.
+
+* [x] Convert from on disk v4 format to in-memory format
+* [ ] Convert from v3 to v4
+* [ ] Design cell operations
+* [ ] Convert from in-memory to disk format
