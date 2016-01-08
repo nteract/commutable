@@ -1,6 +1,6 @@
 # commutable
 
-Immutable notebook document model, operations, and history.
+Immutable notebook document model, operations, and history for Jupyter/IPython.
 
 Relies on [Immutable.js](https://facebook.github.io/immutable-js/) for the
 underlying data structure used for the notebook.
