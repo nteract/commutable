@@ -1,9 +1,14 @@
 import { expect } from 'chai';
 
-import { readNotebook } from '../src';
+import { readImmutableNotebook } from '../src';
 
-describe('readNotebook', () => {
+import path from 'path';
+
+describe('readImmutableNotebook', () => {
   it('reads a notebook from disk', () => {
-    expect(readNotebook()).to.not.be.null;
+    return readImmutableNotebook(path.join(__dirname, './multiples.ipynb'))
+      .then((nb) => {
+        expect(nb).to.not.be.null;
+      });
   });
 });
