@@ -4,6 +4,7 @@
   "description": "Immutable notebook model and operations",
   "main": "index.js",
   "scripts": {
+    "prepublish": "npm run build",
     "prebuild": "mkdirp lib && npm run clean",
     "build": "npm run build:es5",
     "build:es5": "babel src --out-dir lib/ --source-maps",
