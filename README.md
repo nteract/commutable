@@ -4,6 +4,7 @@ Immutable notebook document model, operations, and history for Jupyter/IPython.
 
 > #### com·mut·a·ble
 > /kəˈmyo͞otəbəl/
+> 
 > 1. (of a place or journey) allowing regular commuting to and from work.
 > 2. **capable of being exchanged or converted.**
 
