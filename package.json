@@ -2,7 +2,7 @@
   "name": "commutable",
   "version": "0.1.1",
   "description": "Immutable notebook model and operations",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "prepublish": "npm run build",
     "prebuild": "mkdirp lib && npm run clean",
