@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rgbkrk/commutable.git"
+    "url": "git+https://github.com/nteract/commutable.git"
   },
   "author": "Kyle Kelley <rgbkrk@gmail.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/rgbkrk/commutable/issues"
+    "url": "https://github.com/nteract/commutable/issues"
   },
-  "homepage": "https://github.com/rgbkrk/commutable#readme",
+  "homepage": "https://github.com/nteract/commutable#readme",
   "dependencies": {
     "immutable": "^3.7.6"
   },
