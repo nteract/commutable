@@ -1,14 +1,21 @@
-# commutable
+# com·mut·a·ble
 
-Immutable notebook document model, operations, and history for Jupyter/IPython.
-
-> #### com·mut·a·ble
 > /kəˈmyo͞otəbəl/
-> 
+>
 > 1. (of a place or journey) allowing regular commuting to and from work.
 > 2. **capable of being exchanged or converted.**
 
-The underlying data structure is [immutable](https://facebook.github.io/immutable-js/). This library, `commutable`, allows for exchange and conversion.
+`commutable` is a library for Jupyter Notebook operations, helping to enable
+history stored as a series of immutable notebooks.
+
+## Principles
+
+* **A Notebook is immutable**. It is never mutated in-place.
+* Changes to a notebook are encapsulated into **operations** that take a previous version and return a new one.
+* History is represented as a **list of states**, with past on one end, the present on the other, and an index that can back up into 'undo states'.
+* Modifying a notebook causes any **future states to be thrown away**.
+
+Credits to [Tom MacWright](http://www.macwright.org/2015/05/18/practical-undo.html) for the outline.
 
 ## Inspired by
 
