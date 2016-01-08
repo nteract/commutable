@@ -1,34 +1,49 @@
 import Immutable from 'immutable';
 
-export function fromJS(notebook) {
-  // TODO: Don't mutate the notebook that was provided, rely on ImmutableJS
-  //       early on.
-
-  // Convert the multiline strings from a raw v4 notebook so we have a nice
-  // consistent structure for Immutable.JS
-  for(const cell of notebook.cells) {
-    if(cell.source) {
-      if(Array.isArray(cell.source)) {
-        cell.source = cell.source.join('');
-      }
-    }
-    if(cell.outputs) {
-      for(const output of cell.outputs) {
-        if(output.output_type === 'stream') {
-          if(Array.isArray(output.text)) {
-            output.text = output.text.join('');
-          }
-        }
-        if (output.data) {
-          for (const mimetype in output.data) {
-            if (Array.isArray(output.data[mimetype])) {
-              output.data[mimetype] = output.data[mimetype].join('');
-            }
-          }
-        }
-      }
-    }
+function cleanMultiline(item) {
+  if (item instanceof Immutable.List) {
+    return item.join('');
   }
-  const immnb = Immutable.fromJS(notebook);
-  return immnb;
+  return item;
+}
+
+function demultilineOutputData(data) {
+  // If data is undefined, we just return it back
+  return data ? data.map(cleanMultiline) : data;
+}
+
+function demultilineOutputs(outputs) {
+  // If outputs is undefined, we just return it back
+  return outputs ? outputs.map(output => {
+    return output.update('text', cleanMultiline)
+                 .update('data', demultilineOutputData);
+  }) : outputs;
+}
+
+/**
+ * Concatenate all "multi-line" strings from a cell (on disk -> in-mem format)
+ * @param {Immutable.Map} cell the cell to clean up
+ * @return {Immutable.Map} cell without multi-line strings
+ */
+function demultilineCell(cell) {
+  return cell.update('source', cleanMultiline)
+             .update('outputs', demultilineOutputs);
+}
+
+function demultilineCells(cells) {
+  return cells.map(demultilineCell);
+}
+
+/**
+ * Trims all "multi-line" strings from a notebook (on disk format -> in-memory)
+ * @param {commutable.Notebook} nb notebook
+ * @return {commutable.Notebook} notebook without multi-line strings
+ */
+function demultilineNotebook(nb) {
+  return nb.update('cells', demultilineCells);
+}
+
+export function fromJS(notebookJSON) {
+  const immnb = Immutable.fromJS(notebookJSON);
+  return demultilineNotebook(immnb);
 }
