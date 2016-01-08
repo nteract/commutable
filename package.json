@@ -1,0 +1,19 @@
+{
+  "name": "commutable",
+  "version": "0.0.0",
+  "description": "Immutable notebook model and operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rgbkrk/commutable.git"
+  },
+  "author": "Kyle Kelley <rgbkrk@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/rgbkrk/commutable/issues"
+  },
+  "homepage": "https://github.com/rgbkrk/commutable#readme"
+}
