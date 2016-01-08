@@ -1,13 +1,16 @@
 import { expect } from 'chai';
 
-import { readImmutableNotebook } from '../src';
+import { fromJS } from '../src';
+import { readJSON } from './notebook_helpers';
 
 import path from 'path';
 
 describe('readImmutableNotebook', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
-    return readImmutableNotebook(path.join(__dirname, './multiples.ipynb'))
-      .then((nb) => {
+    return readJSON(path.join(__dirname, './multiples.ipynb'))
+      .then((notebook) => {
+        const nb = fromJS(notebook);
+
         expect(nb).to.not.be.null;
 
         const cells = nb.get('cells');
