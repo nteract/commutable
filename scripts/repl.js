@@ -10,8 +10,8 @@ global.toyNotebook = require('../test/multiples.ipynb');
   const codeLog = (s) => console.log(chalk.white(chalk.bgBlack(s)));
   const insp = o => util.inspect(o, { colors: true });
 
-  codeLog('\nrequire.extensions[\'.ipynb\'] = require.extensions[\'.json\']');
-  codeLog('\nvar toyNotebook = require(\'../test/multiples.ipynb\')');
+  codeLog('\n\nrequire.extensions[\'.ipynb\'] = require.extensions[\'.json\']' +
+          '\nvar toyNotebook = require(\'../test/multiples.ipynb\')');
   console.log(insp(global.toyNotebook));
 
   codeLog('\nconsole.log(commutable)');
