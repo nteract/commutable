@@ -4,6 +4,7 @@
   "description": "Immutable notebook model and operations",
   "main": "lib/index.js",
   "scripts": {
+    "repl": "babel-node scripts/repl.js",
     "prepublish": "npm run build",
     "prebuild": "mkdirp lib && npm run clean",
     "build": "npm run build:es5",
