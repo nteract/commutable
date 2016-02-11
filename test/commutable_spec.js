@@ -14,8 +14,9 @@ describe('readImmutableNotebook', () => {
 
         expect(nb).to.not.be.null;
 
-        const cells = nb.get('cells');
-        cells.forEach(cell => {
+        const cellOrder = nb.get('cellOrder');
+        cellOrder.forEach(id => {
+          const cell = nb.getIn(['cellMap', id]);
           // Converted
           expect(cell.get('source')).to.be.a('string');
 
