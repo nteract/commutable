@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/nteract/commutable#readme",
   "dependencies": {
-    "immutable": "^3.7.6"
+    "immutable": "^3.7.6",
+    "node-uuid": "^1.4.7"
   },
   "babel": {
     "presets": [
