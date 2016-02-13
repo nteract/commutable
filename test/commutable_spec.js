@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 
-import { fromJS } from '../src';
+import { fromJS, toJS } from '../src';
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
 
 import path from 'path';
 
-describe('readImmutableNotebook', () => {
+describe('fromJS', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
     return readJSON(valid[0])
       .then((notebook) => {
@@ -33,6 +33,39 @@ describe('readImmutableNotebook', () => {
           }
 
         });
+      });
+  });
+});
+
+describe('toJS', () => {
+  it('returns something', () => {
+    return readJSON(valid[0])
+      .then((notebook) => {
+        const nb = toJS(fromJS(notebook));
+        expect(nb).to.not.be.null;
+      });
+  });
+  it('removes cellMap', () => {
+    return readJSON(valid[0])
+      .then((notebook) => {
+        const nb = toJS(fromJS(notebook));
+        expect(nb.cellMap).to.be.undefined;
+      });
+  });
+  it('removes cellOrder', () => {
+    return readJSON(valid[0])
+      .then((notebook) => {
+        const nb = toJS(fromJS(notebook));
+        expect(nb.cellOrder).to.be.undefined;
+      });
+  });
+  it('creates cells', () => {
+    return readJSON(valid[0])
+      .then((notebook) => {
+        const inMem = fromJS(notebook);
+        const nb = toJS(inMem);
+        expect(nb.cells).to.not.be.undefined;
+        expect(nb.cells.length).to.equal(inMem.get('cellOrder').count());
       });
   });
 });
