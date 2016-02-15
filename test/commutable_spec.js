@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { fromJS, toJS } from '../src';
+import { fromJS, toJS, Notebook } from '../src';
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
 
@@ -67,5 +67,20 @@ describe('toJS', () => {
         expect(nb.cells).to.not.be.undefined;
         expect(nb.cells.length).to.equal(inMem.get('cellOrder').count());
       });
+  });
+});
+
+describe('Notebook', () => {
+  it('creates an empty notebook', () => {
+    const languageInfo = {
+      'file_extension': '.js',
+      'mimetype': 'application/javascript',
+      'name': 'javascript',
+      'version': '5.5.0',
+    };
+    const nb = new Notebook(languageInfo);
+    expect(nb.get('cellOrder').size).to.equal(0);
+    expect(nb.get('cellMap').size).to.equal(0);
+    expect(nb.getIn(['language_info', 'file_extension'])).to.equal('.js');
   });
 });
