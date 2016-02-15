@@ -29,3 +29,20 @@ export function toJS(notebook) {
     .remove('cellMap')
     .toJS();
 }
+
+/**
+ * Create a new Notebook
+ * @param {language_info} language_info the language info for the document
+ * @param {language_info.file_extension} the file extension for the language
+ * @param {language_info.mimetype} the mimetype for the language
+ * @param {language_info.name} nice name of the language
+ * @param {language_info.version} version of the language
+ */
+export function Notebook(language_info) {
+  return fromJS({
+    'cells': [],
+    'nbformat': 4,
+    'nbformat_minor': 0,
+    language_info,
+  });
+}
