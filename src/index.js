@@ -69,3 +69,10 @@ export function insertCellAt(notebook, cell, index) {
                  .set('cellOrder',
                   notebook.get('cellOrder').splice(index, 0, cellID));
 }
+
+export function appendCell(notebook, cell) {
+  const cellID = uuid();
+  return notebook.setIn(['cellMap', cellID], cell)
+                 .set('cellOrder',
+                  notebook.get('cellOrder').push(cellID));
+}

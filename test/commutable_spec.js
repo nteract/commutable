@@ -7,12 +7,11 @@ import {
   emptyCodeCell,
   emptyMarkdownCell,
   insertCellAt,
+  appendCell,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
-
-import path from 'path';
 
 describe('fromJS', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
@@ -162,5 +161,26 @@ describe('insertCellAt', () => {
     expect(nb5.getIn(['cellMap',
                       nb5.getIn(['cellOrder', 3]),
                       'source'])).to.equal('yeah');
+  });
+});
+
+describe('appendCell', () => {
+  it('appends a cell to the end of a notebook', () => {
+    const languageInfo = {
+      'file_extension': '.js',
+      'mimetype': 'application/javascript',
+      'name': 'javascript',
+      'version': '5.5.0',
+    };
+
+    const nb = appendCell(new Notebook(languageInfo), emptyCodeCell);
+
+    const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'));
+    expect(nb2.get('cellOrder').size).to.equal(2);
+    expect(nb2.get('cellMap').size).to.equal(2);
+    expect(nb2.getIn(['cellMap',
+                      nb2.getIn(['cellOrder', 1]),
+                      'source'])).to.equal('Yay');
+
   });
 });
