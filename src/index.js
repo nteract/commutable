@@ -47,22 +47,18 @@ export function Notebook(language_info) {
   });
 }
 
-export function createMarkdownCell() {
-  return fromJS({
-    'cell_type': 'markdown',
-    'metadata': {},
-    'source': '',
-  });
-}
+export const emptyMarkdownCell = Immutable.fromJS({
+  'cell_type': 'markdown',
+  'metadata': {},
+  'source': '',
+});
 
-export function createCodeCell() {
-  return fromJS({
-    'cell_type': 'code',
-    'execution_count': null,
-    'metadata': {
-      'collapsed': false,
-    },
-    'source': '',
-    'outputs': [],
-  });
-}
+export const emptyCodeCell = Immutable.fromJS({
+  'cell_type': 'code',
+  'execution_count': null,
+  'metadata': {
+    'collapsed': false,
+  },
+  'source': '',
+  'outputs': [],
+});
