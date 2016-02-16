@@ -62,3 +62,10 @@ export const emptyCodeCell = Immutable.fromJS({
   'source': '',
   'outputs': [],
 });
+
+export function insertCellAt(notebook, cell, index) {
+  const cellID = uuid();
+  return notebook.setIn(['cellMap', cellID], cell)
+                 .set('cellOrder',
+                  notebook.get('cellOrder').splice(index, 0, cellID));
+}

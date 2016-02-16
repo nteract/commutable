@@ -6,6 +6,7 @@ import {
   Notebook,
   emptyCodeCell,
   emptyMarkdownCell,
+  insertCellAt,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
@@ -104,5 +105,62 @@ describe('emptyCodeCell', () => {
     expect(emptyCodeCell.get('cell_type')).to.equal('code');
     expect(emptyCodeCell.get('source')).to.equal('');
     expect(emptyCodeCell.get('outputs').size).to.equal(0);
+  });
+});
+
+describe('insertCellAt', () => {
+  it('inserts cell into a notebook', () => {
+    const languageInfo = {
+      'file_extension': '.js',
+      'mimetype': 'application/javascript',
+      'name': 'javascript',
+      'version': '5.5.0',
+    };
+    const nb = new Notebook(languageInfo);
+    expect(nb.get('cellOrder').size).to.equal(0);
+    expect(nb.get('cellMap').size).to.equal(0);
+
+    const nb2 = insertCellAt(nb, emptyCodeCell, 0);
+    expect(nb2.get('cellOrder').size).to.equal(1);
+    expect(nb2.get('cellMap').size).to.equal(1);
+  });
+
+  it('allows arbitrary insertion', () => {
+    const languageInfo = {
+      'file_extension': '.js',
+      'mimetype': 'application/javascript',
+      'name': 'javascript',
+      'version': '5.5.0',
+    };
+    const nb = new Notebook(languageInfo);
+    expect(nb.get('cellOrder').size).to.equal(0);
+    expect(nb.get('cellMap').size).to.equal(0);
+
+    const nb2 = insertCellAt(nb, emptyCodeCell, 0);
+    expect(nb2.get('cellOrder').size).to.equal(1);
+    expect(nb2.get('cellMap').size).to.equal(1);
+
+    const cell = emptyCodeCell.set('source', 'console.log()');
+
+    const nb3 = insertCellAt(nb2, cell, 1);
+    expect(nb3.get('cellOrder').size).to.equal(2);
+    expect(nb3.get('cellMap').size).to.equal(2);
+
+    const cellID = nb3.getIn(['cellOrder', 1]);
+    expect(nb3.getIn(['cellMap', cellID, 'source'])).to.equal('console.log()');
+
+    expect(nb3.getIn(['cellMap',
+                      nb3.getIn(['cellOrder', 0]),
+                      'source'])).to.equal('');
+
+    // Ridiculous number results in being stuck on the end
+    const nb4 = insertCellAt(nb3, emptyCodeCell.set('source', 'woo'), 200);
+    expect(nb4.getIn(['cellMap',
+                      nb4.getIn(['cellOrder', 2]),
+                      'source'])).to.equal('woo');
+    const nb5 = insertCellAt(nb4, emptyCodeCell.set('source', 'yeah'), 100);
+    expect(nb5.getIn(['cellMap',
+                      nb5.getIn(['cellOrder', 3]),
+                      'source'])).to.equal('yeah');
   });
 });
