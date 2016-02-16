@@ -119,6 +119,10 @@ describe('insertCellAt', () => {
     const nb = new Notebook(languageInfo);
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
+
+    const nb2 = insertCellAt(nb, emptyCodeCell, 0);
+    expect(nb2.get('cellOrder').size).to.equal(1);
+    expect(nb2.get('cellMap').size).to.equal(1);
   });
 
   it('allows arbitrary insertion', () => {
@@ -154,8 +158,6 @@ describe('insertCellAt', () => {
     expect(nb4.getIn(['cellMap',
                       nb4.getIn(['cellOrder', 2]),
                       'source'])).to.equal('woo');
-
-    // Front load cell
     const nb5 = insertCellAt(nb4, emptyCodeCell.set('source', 'yeah'), 100);
     expect(nb5.getIn(['cellMap',
                       nb5.getIn(['cellOrder', 3]),
