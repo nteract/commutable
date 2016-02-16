@@ -1,6 +1,13 @@
 import { expect } from 'chai';
 
-import { fromJS, toJS, Notebook } from '../src';
+import {
+  fromJS,
+  toJS,
+  Notebook,
+  emptyCodeCell,
+  emptyMarkdownCell,
+} from '../src';
+
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
 
@@ -82,5 +89,20 @@ describe('Notebook', () => {
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
     expect(nb.getIn(['language_info', 'file_extension'])).to.equal('.js');
+  });
+});
+
+describe('emptyMarkdownCell', () => {
+  it('is an empty immutable markdown cell', () => {
+    expect(emptyMarkdownCell.get('cell_type')).to.equal('markdown');
+    expect(emptyMarkdownCell.get('source')).to.equal('');
+  });
+});
+
+describe('emptyCodeCell', () => {
+  it('is an empty immutable code cell', () => {
+    expect(emptyCodeCell.get('cell_type')).to.equal('code');
+    expect(emptyCodeCell.get('source')).to.equal('');
+    expect(emptyCodeCell.get('outputs').size).to.equal(0);
   });
 });

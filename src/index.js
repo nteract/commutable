@@ -46,3 +46,19 @@ export function Notebook(language_info) {
     language_info,
   });
 }
+
+export const emptyMarkdownCell = Immutable.fromJS({
+  'cell_type': 'markdown',
+  'metadata': {},
+  'source': '',
+});
+
+export const emptyCodeCell = Immutable.fromJS({
+  'cell_type': 'code',
+  'execution_count': null,
+  'metadata': {
+    'collapsed': false,
+  },
+  'source': '',
+  'outputs': [],
+});
