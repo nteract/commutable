@@ -1,10 +1,10 @@
 import Immutable from 'immutable';
 
-import { cleanMultilines } from './cleaning';
+import { cleanMultilineNotebook } from './cleaning';
 import { v4 as uuid } from 'node-uuid';
 
 export function fromJS(notebookJS) {
-  const immnb = cleanMultilines(Immutable.fromJS(notebookJS));
+  const immnb = cleanMultilineNotebook(Immutable.fromJS(notebookJS));
 
   const cellData = {};
   return immnb

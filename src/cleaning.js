@@ -56,6 +56,6 @@ function cleanMultilineCells(cells) {
  * @param {Immutable.Map} nb notebook
  * @return {Immutable.Map} notebook without multi-line strings
  */
-export function cleanMultilines(nb) {
+export function cleanMultilineNotebook(nb) {
   return nb.update('cells', cleanMultilineCells);
 }
