@@ -8,10 +8,19 @@ import {
   emptyMarkdownCell,
   insertCellAt,
   appendCell,
+  removeCell,
+  removeCellAt,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
+
+const LANGUAGE_INFO = {
+  'file_extension': '.js',
+  'mimetype': 'application/javascript',
+  'name': 'javascript',
+  'version': '5.5.0',
+};
 
 describe('fromJS', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
@@ -79,13 +88,8 @@ describe('toJS', () => {
 
 describe('Notebook', () => {
   it('creates an empty notebook', () => {
-    const languageInfo = {
-      'file_extension': '.js',
-      'mimetype': 'application/javascript',
-      'name': 'javascript',
-      'version': '5.5.0',
-    };
-    const nb = new Notebook(languageInfo);
+
+    const nb = new Notebook(LANGUAGE_INFO);
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
     expect(nb.getIn(['language_info', 'file_extension'])).to.equal('.js');
@@ -109,13 +113,7 @@ describe('emptyCodeCell', () => {
 
 describe('insertCellAt', () => {
   it('inserts cell into a notebook', () => {
-    const languageInfo = {
-      'file_extension': '.js',
-      'mimetype': 'application/javascript',
-      'name': 'javascript',
-      'version': '5.5.0',
-    };
-    const nb = new Notebook(languageInfo);
+    const nb = new Notebook(LANGUAGE_INFO);
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
@@ -125,13 +123,7 @@ describe('insertCellAt', () => {
   });
 
   it('allows arbitrary insertion', () => {
-    const languageInfo = {
-      'file_extension': '.js',
-      'mimetype': 'application/javascript',
-      'name': 'javascript',
-      'version': '5.5.0',
-    };
-    const nb = new Notebook(languageInfo);
+    const nb = new Notebook(LANGUAGE_INFO);
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
@@ -166,15 +158,7 @@ describe('insertCellAt', () => {
 
 describe('appendCell', () => {
   it('appends a cell to the end of a notebook', () => {
-    const languageInfo = {
-      'file_extension': '.js',
-      'mimetype': 'application/javascript',
-      'name': 'javascript',
-      'version': '5.5.0',
-    };
-
-    const nb = appendCell(new Notebook(languageInfo), emptyCodeCell);
-
+    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell);
     const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'));
     expect(nb2.get('cellOrder').size).to.equal(2);
     expect(nb2.get('cellMap').size).to.equal(2);
@@ -182,5 +166,56 @@ describe('appendCell', () => {
                       nb2.getIn(['cellOrder', 1]),
                       'source'])).to.equal('Yay');
 
+  });
+});
+
+describe('removeCellAt', () => {
+  it('removes correct cell', () => {
+      let nb = new Notebook(LANGUAGE_INFO);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      const cellOrder = nb.get('cellOrder');
+
+      nb = removeCellAt(nb, 1);
+
+      expect(nb.get('cellOrder').count()).to.equal(2);
+      expect(nb.get('cellMap').count()).to.equal(2);
+      expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
+      expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
+      expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
+  });
+  it('doesn\'t fail if index is invalid', () => {
+      let nb = new Notebook(LANGUAGE_INFO);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = removeCellAt(nb, -1);
+      nb = removeCellAt(nb, 4);
+  });
+});
+
+describe('removeCell', () => {
+  it('removes correct cell', () => {
+      let nb = new Notebook(LANGUAGE_INFO);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      const cellOrder = nb.get('cellOrder');
+
+      nb = removeCell(nb, cellOrder.get(1));
+
+      expect(nb.get('cellOrder').count()).to.equal(2);
+      expect(nb.get('cellMap').count()).to.equal(2);
+      expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
+      expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
+      expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
+  });
+  it('doesn\'t fail if id is invalid', () => {
+      let nb = new Notebook(LANGUAGE_INFO);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = appendCell(nb, emptyCodeCell);
+      nb = removeCell(nb, 'notrealid');
   });
 });

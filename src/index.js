@@ -76,3 +76,13 @@ export function appendCell(notebook, cell) {
                  .set('cellOrder',
                   notebook.get('cellOrder').push(cellID));
 }
+
+export function removeCell(notebook, cellId) {
+  return notebook
+    .removeIn(['cellMap', cellId])
+    .update('cellOrder', cellOrder => cellOrder.filterNot(id => id === cellId));
+}
+
+export function removeCellAt(notebook, index) {
+  return removeCell(notebook, notebook.getIn(['cellOrder', index]));
+}
