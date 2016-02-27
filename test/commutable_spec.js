@@ -1,5 +1,7 @@
 import { expect } from 'chai';
 
+import { v4 as uuid } from 'node-uuid';
+
 import {
   fromJS,
   toJS,
@@ -117,7 +119,9 @@ describe('insertCellAt', () => {
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
-    const nb2 = insertCellAt(nb, emptyCodeCell, 0);
+    const id = uuid();
+
+    const nb2 = insertCellAt(nb, emptyCodeCell, id, 0);
     expect(nb2.get('cellOrder').size).to.equal(1);
     expect(nb2.get('cellMap').size).to.equal(1);
   });
@@ -127,29 +131,26 @@ describe('insertCellAt', () => {
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
-    const nb2 = insertCellAt(nb, emptyCodeCell, 0);
+    const cellID2 = uuid();
+    const nb2 = insertCellAt(nb, emptyCodeCell, cellID2, 0);
     expect(nb2.get('cellOrder').size).to.equal(1);
     expect(nb2.get('cellMap').size).to.equal(1);
 
     const cell = emptyCodeCell.set('source', 'console.log()');
-
-    const nb3 = insertCellAt(nb2, cell, 1);
+    const cellID3 = uuid();
+    const nb3 = insertCellAt(nb2, cell, cellID3, 1);
     expect(nb3.get('cellOrder').size).to.equal(2);
     expect(nb3.get('cellMap').size).to.equal(2);
 
-    const cellID = nb3.getIn(['cellOrder', 1]);
-    expect(nb3.getIn(['cellMap', cellID, 'source'])).to.equal('console.log()');
-
-    expect(nb3.getIn(['cellMap',
-                      nb3.getIn(['cellOrder', 0]),
-                      'source'])).to.equal('');
+    expect(nb3.getIn(['cellMap', cellID3, 'source'])).to.equal('console.log()');
+    expect(nb3.getIn(['cellMap', cellID2, 'source'])).to.equal('');
 
     // Ridiculous number results in being stuck on the end
-    const nb4 = insertCellAt(nb3, emptyCodeCell.set('source', 'woo'), 200);
+    const nb4 = insertCellAt(nb3, emptyCodeCell.set('source', 'woo'), uuid(), 200);
     expect(nb4.getIn(['cellMap',
                       nb4.getIn(['cellOrder', 2]),
                       'source'])).to.equal('woo');
-    const nb5 = insertCellAt(nb4, emptyCodeCell.set('source', 'yeah'), 100);
+    const nb5 = insertCellAt(nb4, emptyCodeCell.set('source', 'yeah'), uuid(), 100);
     expect(nb5.getIn(['cellMap',
                       nb5.getIn(['cellOrder', 3]),
                       'source'])).to.equal('yeah');
@@ -158,12 +159,18 @@ describe('insertCellAt', () => {
 
 describe('appendCell', () => {
   it('appends a cell to the end of a notebook', () => {
-    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell);
-    const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'));
+    const cellID = uuid();
+    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, cellID);
+    const cellID2 = uuid();
+    const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'), cellID2);
     expect(nb2.get('cellOrder').size).to.equal(2);
     expect(nb2.get('cellMap').size).to.equal(2);
+
+    expect(nb2.getIn(['cellOrder', 0])).to.equal(cellID);
+    expect(nb2.getIn(['cellOrder', 1])).to.equal(cellID2);
+
     expect(nb2.getIn(['cellMap',
-                      nb2.getIn(['cellOrder', 1]),
+                      cellID2,
                       'source'])).to.equal('Yay');
 
   });
@@ -171,51 +178,51 @@ describe('appendCell', () => {
 
 describe('removeCellAt', () => {
   it('removes correct cell', () => {
-      let nb = new Notebook(LANGUAGE_INFO);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      const cellOrder = nb.get('cellOrder');
+    let nb = new Notebook(LANGUAGE_INFO);
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    const cellOrder = nb.get('cellOrder');
 
-      nb = removeCellAt(nb, 1);
+    nb = removeCellAt(nb, 1);
 
-      expect(nb.get('cellOrder').count()).to.equal(2);
-      expect(nb.get('cellMap').count()).to.equal(2);
-      expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
-      expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
-      expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
+    expect(nb.get('cellOrder').count()).to.equal(2);
+    expect(nb.get('cellMap').count()).to.equal(2);
+    expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
+    expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
+    expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
   });
   it('doesn\'t fail if index is invalid', () => {
-      let nb = new Notebook(LANGUAGE_INFO);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = removeCellAt(nb, -1);
-      nb = removeCellAt(nb, 4);
+    let nb = new Notebook(LANGUAGE_INFO);
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = removeCellAt(nb, -1);
+    nb = removeCellAt(nb, 4);
   });
 });
 
 describe('removeCell', () => {
   it('removes correct cell', () => {
-      let nb = new Notebook(LANGUAGE_INFO);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      const cellOrder = nb.get('cellOrder');
+    let nb = new Notebook(LANGUAGE_INFO);
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    const cellOrder = nb.get('cellOrder');
 
-      nb = removeCell(nb, cellOrder.get(1));
+    nb = removeCell(nb, cellOrder.get(1));
 
-      expect(nb.get('cellOrder').count()).to.equal(2);
-      expect(nb.get('cellMap').count()).to.equal(2);
-      expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
-      expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
-      expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
+    expect(nb.get('cellOrder').count()).to.equal(2);
+    expect(nb.get('cellMap').count()).to.equal(2);
+    expect(nb.getIn(['cellMap', cellOrder.get(1)])).to.be.undefined;
+    expect(nb.getIn(['cellMap', cellOrder.get(0)])).to.not.be.undefined;
+    expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
   });
   it('doesn\'t fail if id is invalid', () => {
-      let nb = new Notebook(LANGUAGE_INFO);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = appendCell(nb, emptyCodeCell);
-      nb = removeCell(nb, 'notrealid');
+    let nb = new Notebook(LANGUAGE_INFO);
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = appendCell(nb, emptyCodeCell, uuid());
+    nb = removeCell(nb, 'notrealid');
   });
 });

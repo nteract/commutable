@@ -32,11 +32,12 @@ export function toJS(notebook) {
 
 /**
  * Create a new Notebook
- * @param {language_info} language_info the language info for the document
- * @param {language_info.file_extension} the file extension for the language
- * @param {language_info.mimetype} the mimetype for the language
- * @param {language_info.name} nice name of the language
- * @param {language_info.version} version of the language
+ * @param {Object} language_info the language info for the document
+ * @param {string} language_info.file_extension the file extension for the language
+ * @param {string} language_info.mimetype the mimetype for the language
+ * @param {string} language_info.name nice name of the language
+ * @param {string} language_info.version version of the language
+ * @return {Immutable.Map} notebook document
  */
 export function Notebook(language_info) {
   return fromJS({
@@ -63,15 +64,16 @@ export const emptyCodeCell = Immutable.fromJS({
   'outputs': [],
 });
 
-export function insertCellAt(notebook, cell, index) {
-  const cellID = uuid();
+export function insertCellAt(notebook, cell, cellID, index) {
   return notebook.setIn(['cellMap', cellID], cell)
                  .set('cellOrder',
                   notebook.get('cellOrder').splice(index, 0, cellID));
 }
 
-export function appendCell(notebook, cell) {
-  const cellID = uuid();
+export function appendCell(notebook, cell, cellID) {
+  if(!cellID) {
+    cellID = uuid();
+  }
   return notebook.setIn(['cellMap', cellID], cell)
                  .set('cellOrder',
                   notebook.get('cellOrder').push(cellID));
