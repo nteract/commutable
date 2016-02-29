@@ -67,7 +67,11 @@ export const emptyCodeCell = Immutable.fromJS({
 export function insertCellAt(notebook, cell, cellID, index) {
   return notebook.setIn(['cellMap', cellID], cell)
                  .set('cellOrder',
-                  notebook.get('cellOrder').splice(index, 0, cellID));
+                  notebook.get('cellOrder').insert(index, cellID));
+}
+
+export function insertCellAfter(notebook, cell, cellID, priorCellID) {
+  return insertCellAt(notebook, cell, cellID, notebook.get('cellOrder').indexOf(priorCellID) + 1);
 }
 
 export function appendCell(notebook, cell, cellID) {
@@ -77,6 +81,18 @@ export function appendCell(notebook, cell, cellID) {
   return notebook.setIn(['cellMap', cellID], cell)
                  .set('cellOrder',
                   notebook.get('cellOrder').push(cellID));
+}
+
+export function updateSource(notebook, cellID, source) {
+  return notebook.setIn(['cellMap', cellID, 'source'], source);
+}
+
+export function updateOutputs(notebook, cellID, outputs) {
+  return notebook.setIn(['cellMap', cellID, 'outputs'], outputs);
+}
+
+export function updateExecutionCount(notebook, cellID, count) {
+  return notebook.setIn(['cellMap', cellID, 'execution_count'], count);
 }
 
 export function removeCell(notebook, cellId) {
