@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import { v4 as uuid } from 'node-uuid';
 
+import Immutable from 'immutable';
+
 import {
   fromJS,
   toJS,
@@ -9,9 +11,13 @@ import {
   emptyCodeCell,
   emptyMarkdownCell,
   insertCellAt,
+  insertCellAfter,
   appendCell,
   removeCell,
   removeCellAt,
+  updateSource,
+  updateExecutionCount,
+  updateOutputs,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
@@ -224,5 +230,51 @@ describe('removeCell', () => {
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = removeCell(nb, 'notrealid');
+  });
+});
+
+describe('insertCellAfter', () => {
+  it('inserts a cell after the given cell ID', () => {
+    const id = uuid();
+    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id);
+    const id2 = uuid();
+    expect(insertCellAfter(nb, emptyMarkdownCell, id2, id)
+            .get('cellOrder').toJS()).to.deep.equal([id, id2]);
+
+  });
+});
+
+describe('updateSource', () => {
+  it('updates the source of a cell by ID', () => {
+    const id = uuid();
+    const nb = updateSource(
+                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                id, 'test');
+    expect(nb.getIn(['cellMap', id, 'source'])).to.equal('test');
+  });
+});
+
+describe('updateExecutionCount', () => {
+  it('updates the execution count of a cell by ID', () => {
+    const id = uuid();
+    const nb = updateExecutionCount(
+                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                id, 3);
+    expect(nb.getIn(['cellMap', id, 'execution_count'])).to.equal(3);
+  });
+});
+
+describe('updateOutputs', () => {
+  it('updates the outputs of a cell by ID', () => {
+    const id = uuid();
+    const output = Immutable.fromJS({
+      'output_type': 'stream',
+      'name': 'stdout',
+      'text': '[multiline stream text]',
+    });
+    const nb = updateOutputs(
+                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                id, new Immutable.List([output]));
+    expect(nb.getIn(['cellMap', id, 'outputs', 0, 'text'])).to.equal('[multiline stream text]');
   });
 });
