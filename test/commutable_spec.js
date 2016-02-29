@@ -2,6 +2,8 @@ import { expect } from 'chai';
 
 import { v4 as uuid } from 'node-uuid';
 
+import Immutable from 'immutable';
+
 import {
   fromJS,
   toJS,
@@ -15,6 +17,7 @@ import {
   removeCellAt,
   updateSource,
   updateExecutionCount,
+  updateOutputs,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
@@ -258,5 +261,20 @@ describe('updateExecutionCount', () => {
                 appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
                 id, 3);
     expect(nb.getIn(['cellMap', id, 'execution_count'])).to.equal(3);
+  });
+});
+
+describe('updateOutputs', () => {
+  it('updates the outputs of a cell by ID', () => {
+    const id = uuid();
+    const output = Immutable.fromJS({
+      'output_type': 'stream',
+      'name': 'stdout',
+      'text': '[multiline stream text]',
+    });
+    const nb = updateOutputs(
+                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                id, new Immutable.List([output]));
+    expect(nb.getIn(['cellMap', id, 'outputs', 0, 'text'])).to.equal('[multiline stream text]');
   });
 });
