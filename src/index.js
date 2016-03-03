@@ -32,19 +32,22 @@ export function toJS(notebook) {
 
 /**
  * Create a new Notebook
- * @param {Object} language_info the language info for the document
- * @param {string} language_info.file_extension the file extension for the language
- * @param {string} language_info.mimetype the mimetype for the language
- * @param {string} language_info.name nice name of the language
- * @param {string} language_info.version version of the language
+ * @param {Object} [language_info] the language info for the document
+ * @param {string} [language_info.file_extension] the file extension for the language
+ * @param {string} [language_info.mimetype] the mimetype for the language
+ * @param {string} [language_info.name] nice name of the language
+ * @param {string} [language_info.version] version of the language
+ * @param {Object} [kernelspec] the kernelspec for the kernel used in the document
+ * @param {Object} [kernelspec.name] name of the kernel
  * @return {Immutable.Map} notebook document
  */
-export function Notebook(language_info) {
+export function Notebook(language_info, kernelspec) {
   return fromJS({
     'cells': [],
     'nbformat': 4,
     'nbformat_minor': 0,
     language_info,
+    kernelspec
   });
 }
 
