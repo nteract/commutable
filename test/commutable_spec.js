@@ -7,7 +7,7 @@ import Immutable from 'immutable';
 import {
   fromJS,
   toJS,
-  Notebook,
+  emptyNotebook,
   emptyCodeCell,
   emptyMarkdownCell,
   insertCellAt,
@@ -22,13 +22,6 @@ import {
 
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
-
-const LANGUAGE_INFO = {
-  'file_extension': '.js',
-  'mimetype': 'application/javascript',
-  'name': 'javascript',
-  'version': '5.5.0',
-};
 
 describe('fromJS', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
@@ -97,10 +90,9 @@ describe('toJS', () => {
 describe('Notebook', () => {
   it('creates an empty notebook', () => {
 
-    const nb = new Notebook(LANGUAGE_INFO);
+    const nb = emptyNotebook;
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
-    expect(nb.getIn(['language_info', 'file_extension'])).to.equal('.js');
   });
 });
 
@@ -121,7 +113,7 @@ describe('emptyCodeCell', () => {
 
 describe('insertCellAt', () => {
   it('inserts cell into a notebook', () => {
-    const nb = new Notebook(LANGUAGE_INFO);
+    const nb = emptyNotebook;
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
@@ -133,7 +125,7 @@ describe('insertCellAt', () => {
   });
 
   it('allows arbitrary insertion', () => {
-    const nb = new Notebook(LANGUAGE_INFO);
+    const nb = emptyNotebook;
     expect(nb.get('cellOrder').size).to.equal(0);
     expect(nb.get('cellMap').size).to.equal(0);
 
@@ -166,7 +158,7 @@ describe('insertCellAt', () => {
 describe('appendCell', () => {
   it('appends a cell to the end of a notebook', () => {
     const cellID = uuid();
-    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, cellID);
+    const nb = appendCell(emptyNotebook, emptyCodeCell, cellID);
     const cellID2 = uuid();
     const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'), cellID2);
     expect(nb2.get('cellOrder').size).to.equal(2);
@@ -184,7 +176,7 @@ describe('appendCell', () => {
 
 describe('removeCellAt', () => {
   it('removes correct cell', () => {
-    let nb = new Notebook(LANGUAGE_INFO);
+    let nb = emptyNotebook;
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
@@ -199,7 +191,7 @@ describe('removeCellAt', () => {
     expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
   });
   it('doesn\'t fail if index is invalid', () => {
-    let nb = new Notebook(LANGUAGE_INFO);
+    let nb = emptyNotebook;
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
@@ -210,7 +202,7 @@ describe('removeCellAt', () => {
 
 describe('removeCell', () => {
   it('removes correct cell', () => {
-    let nb = new Notebook(LANGUAGE_INFO);
+    let nb = emptyNotebook;
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
@@ -225,7 +217,7 @@ describe('removeCell', () => {
     expect(nb.getIn(['cellMap', cellOrder.get(2)])).to.not.be.undefined;
   });
   it('doesn\'t fail if id is invalid', () => {
-    let nb = new Notebook(LANGUAGE_INFO);
+    let nb = emptyNotebook;
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
     nb = appendCell(nb, emptyCodeCell, uuid());
@@ -236,7 +228,7 @@ describe('removeCell', () => {
 describe('insertCellAfter', () => {
   it('inserts a cell after the given cell ID', () => {
     const id = uuid();
-    const nb = appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id);
+    const nb = appendCell(emptyNotebook, emptyCodeCell, id);
     const id2 = uuid();
     expect(insertCellAfter(nb, emptyMarkdownCell, id2, id)
             .get('cellOrder').toJS()).to.deep.equal([id, id2]);
@@ -248,7 +240,7 @@ describe('updateSource', () => {
   it('updates the source of a cell by ID', () => {
     const id = uuid();
     const nb = updateSource(
-                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                appendCell(emptyNotebook, emptyCodeCell, id),
                 id, 'test');
     expect(nb.getIn(['cellMap', id, 'source'])).to.equal('test');
   });
@@ -258,7 +250,7 @@ describe('updateExecutionCount', () => {
   it('updates the execution count of a cell by ID', () => {
     const id = uuid();
     const nb = updateExecutionCount(
-                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                appendCell(emptyNotebook, emptyCodeCell, id),
                 id, 3);
     expect(nb.getIn(['cellMap', id, 'execution_count'])).to.equal(3);
   });
@@ -273,7 +265,7 @@ describe('updateOutputs', () => {
       'text': '[multiline stream text]',
     });
     const nb = updateOutputs(
-                appendCell(new Notebook(LANGUAGE_INFO), emptyCodeCell, id),
+                appendCell(emptyNotebook, emptyCodeCell, id),
                 id, new Immutable.List([output]));
     expect(nb.getIn(['cellMap', id, 'outputs', 0, 'text'])).to.equal('[multiline stream text]');
   });
