@@ -30,5 +30,5 @@ operations.
 
 * [x] Convert from on disk v4 format to in-memory format
 * [ ] Convert from v3 to v4
-* [ ] Design cell operations
-* [ ] Convert from in-memory to disk format
+* [x] Design cell operations
+* [x] Convert from in-memory to disk format
