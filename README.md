@@ -27,11 +27,36 @@ npm install --save commutable
 
 ### Fresh notebook
 
-```
-const commutable = require('commutable')
-
-var nb = new commutable.Notebook()
-
-
-
+```js
+> const uuid = require('node-uuid').v4
+undefined
+> const commutable = require('.')
+undefined
+> nb = commutable.emptyNotebook
+Map { "cellOrder": List [], "nbformat": 4, "nbformat_minor": 0, "cellMap": Map {} }
+> cellID = uuid()
+'ad044827-59f1-47bd-b316-ad9095f6e93a'
+> commutable.appendCell(nb, commutable.emptyCodeCell, cellID).toJS()
+{ cellOrder: [ 'ad044827-59f1-47bd-b316-ad9095f6e93a' ],
+  nbformat: 4,
+  nbformat_minor: 0,
+  cellMap:
+   { 'ad044827-59f1-47bd-b316-ad9095f6e93a':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: '',
+        outputs: [] } } }
+> commutable.appendCell(nb, commutable.emptyCodeCell.set('source', 'import random\nrandom.random()', cellID)
+> commutable.appendCell(nb, commutable.emptyCodeCell.set('source', 'import random\nrandom.random()'), cellID).toJS()
+{ cellOrder: [ 'ad044827-59f1-47bd-b316-ad9095f6e93a' ],
+  nbformat: 4,
+  nbformat_minor: 0,
+  cellMap:
+   { 'ad044827-59f1-47bd-b316-ad9095f6e93a':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: 'import random\nrandom.random()',
+        outputs: [] } } }
 ```
