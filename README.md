@@ -17,18 +17,21 @@ history stored as a series of immutable notebooks.
 
 Credits to [Tom MacWright](http://www.macwright.org/2015/05/18/practical-undo.html) for the outline.
 
-## Inspired by
+## Installation
 
-* [Elm's time traveling debugger](http://debug.elm-lang.org/)
-* [Practical Undo](http://www.macwright.org/2015/05/18/practical-undo.html)
-* [Live React: Hot Reloading with Time Travel](https://www.youtube.com/watch?v=xsSnOQynTHs)
+```
+npm install --save commutable
+```
 
-## Roadmap
+## Usage
 
-Provide utilities for working with IPython/Jupyter notebooks under their common
-operations.
+### Fresh notebook
 
-* [x] Convert from on disk v4 format to in-memory format
-* [ ] Convert from v3 to v4
-* [x] Design cell operations
-* [x] Convert from in-memory to disk format
+```
+const commutable = require('commutable')
+
+var nb = new commutable.Notebook()
+
+
+
+```
