@@ -34,26 +34,39 @@ undefined
 undefined
 > nb = commutable.emptyNotebook
 Map { "cellOrder": List [], "nbformat": 4, "nbformat_minor": 0, "cellMap": Map {} }
+
 > cellID = uuid()
-'ad044827-59f1-47bd-b316-ad9095f6e93a'
-> commutable.appendCell(nb, commutable.emptyCodeCell, cellID).toJS()
-{ cellOrder: [ 'ad044827-59f1-47bd-b316-ad9095f6e93a' ],
+'d50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b'
+
+> nb2 = commutable.appendCell(nb, commutable.emptyCodeCell, cellID)
+> nb2.toJS()
+{ cellOrder: [ 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b' ],
   nbformat: 4,
   nbformat_minor: 0,
   cellMap:
-   { 'ad044827-59f1-47bd-b316-ad9095f6e93a':
+   { 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b':
       { cell_type: 'code',
         execution_count: null,
         metadata: [Object],
         source: '',
         outputs: [] } } }
-> commutable.appendCell(nb, commutable.emptyCodeCell.set('source', 'import random\nrandom.random()', cellID)
-> commutable.appendCell(nb, commutable.emptyCodeCell.set('source', 'import random\nrandom.random()'), cellID).toJS()
-{ cellOrder: [ 'ad044827-59f1-47bd-b316-ad9095f6e93a' ],
+
+> nb3 = commutable.appendCell(nb2,
+... commutable.emptyCodeCell.set('source', 'import random\nrandom.random()'), uuid())
+> nb3.toJS()
+{ cellOrder:
+   [ 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b',
+     '8d40321c-87c0-4d86-900c-2174f6920969' ],
   nbformat: 4,
   nbformat_minor: 0,
   cellMap:
-   { 'ad044827-59f1-47bd-b316-ad9095f6e93a':
+   { 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: '',
+        outputs: [] },
+     '8d40321c-87c0-4d86-900c-2174f6920969':
       { cell_type: 'code',
         execution_count: null,
         metadata: [Object],
