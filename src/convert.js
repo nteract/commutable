@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 
 function _warnIfInvalid(nb, major) {
   // TODO
@@ -20,6 +20,17 @@ function _repeatString(s, n) {
 
 const _upgraders = {
   4: function to4(nb) {
+    const _mime_map = {
+      "text" : "text/plain",
+      "html" : "text/html",
+      "svg" : "image/svg+xml",
+      "png" : "image/png",
+      "jpeg" : "image/jpeg",
+      "latex" : "text/latex",
+      "json" : "application/json",
+      "javascript" : "application/javascript",
+    };
+
     return _warnIfInvalid(_warnIfInvalid(nb, 3)
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
       .set('nbformat', 4)
@@ -56,8 +67,37 @@ const _upgraders = {
                     // Purposefully continue onto the display_data
                     // transformation by not returning or breaking the switch
                   case 'display_data':
-                    return output.set('metadata', Map());
-                    // TODO: More here
+                    const data = {};
+                    output = output
+                      .update('metadata', Map(), metadata => {
+                        const newMetadata = {};
+                        metadata
+                          .map((value, key) => {
+                            newMetadata[_mime_map[key] || key] = value;
+                          });
+                        return fromJS(newMetadata);
+                      })
+                      .map((value, key) => {
+                        if (['output_type', 'execution_count', 'metadata'].indexOf(key) === -1) {
+                          data[_mime_map[key] || key] = value;
+                          return null;
+                        }
+                        return value;
+                      })
+                      .filter(value => Boolean(value));
+                      .set('data', new Map(data));
+                    const jsonData = output.getIn(['data', 'application/json']);
+                    if (jsonData) {
+                      output = output.setIn(['data', 'application/json'], JSON.parse(output.getIn(['data', 'application/json'])));
+                    }
+                    // promote ascii bytes (from v2) to unicode
+                    ['image/png', 'image/jpeg'].forEach(imageMimetype => {
+                      const imageData = output.getIn(['data', imageMimetype]);
+                      if (imageData instanceof Buffer) {
+                        output = output.setIn(['data', imageMimetype], imageData.toString('ascii'));
+                      }
+                    });
+                    return output;
                   }
                 });
             case 'heading':
