@@ -84,7 +84,7 @@ const _upgraders = {
                         }
                         return value;
                       })
-                      .filter(value => Boolean(value));
+                      .filter(value => Boolean(value))
                       .set('data', new Map(data));
                     const jsonData = output.getIn(['data', 'application/json']);
                     if (jsonData) {
