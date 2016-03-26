@@ -2,8 +2,12 @@ import Immutable from 'immutable';
 
 import { cleanMultilineNotebook } from './cleaning';
 import { v4 as uuid } from 'node-uuid';
+import { upgrade } from './convert';
+export { upgrade };
 
 export function fromJS(notebookJS) {
+  // TODO: Check the version of the notebook and convert it to the expected
+  // version for in memory operations.
   const immnb = cleanMultilineNotebook(Immutable.fromJS(notebookJS));
 
   const cellData = {};

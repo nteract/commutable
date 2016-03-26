@@ -1,24 +1,22 @@
-import { Map, fromJS } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
+import repeat from 'lodash.repeat';
 
-function _warnIfInvalid(nb, major) {
-  // TODO
+/**
+ * Throws if the notebook is invalid for a given major revision
+ * @param  {Map} nb       immutable map notebook object
+ * @param  {number} major nbformat major revision
+ * @return {Map} nb
+ */
+function throwIfInvalid(nb, major) {
+  // TODO: Implement check
   return nb;
 }
 
-function _repeatString(s, n) {
-  var pattern = s;
-  s = '';
-  while (n > 0) {
-    if (n % 2 === 1) {
-      s += pattern;
-    }
-    pattern += pattern;
-    n = n >> 1;
-  }
-  return s;
-}
-
-const _upgraders = {
+/**
+ * Dictionary of functions that perform upgrades.  The keys are the major
+ * revision that the functions upgrade too.
+ */
+const upgraders = {
   4: function to4(nb) {
     const _mime_map = {
       "text" : "text/plain",
@@ -31,13 +29,13 @@ const _upgraders = {
       "javascript" : "application/javascript",
     };
 
-    return _warnIfInvalid(_warnIfInvalid(nb, 3)
+    return throwIfInvalid(throwIfInvalid(nb, 3)
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
       .set('nbformat', 4)
       .set('nbformat_minor', 0)
       .set('cells', nb
         .get('worksheets')
-        .flatten()
+        .reduce((a,b) => a.concat(b.get('cells')), List())
         .map(cell => {
           const newCell = cell.set('metadata', Map());
           const cellType = newCell.get('cell_type');
@@ -51,63 +49,77 @@ const _upgraders = {
                 .delete('input')
                 .set('execution_count', newCell.get('prompt_number'))
                 .delete('prompt_number')
-                .update('outputs', output => {
-                  switch (output.get('output_type')) {
-                  case 'pyerr':
-                    return output.set('output_type', 'error');
-                  case 'stream':
-                    return output
-                      .set('name', output.get('stream', 'stdout'))
-                      .delete('stream');
-                  case 'pyout':
-                    output = output
-                      .set('output_type', 'execute_result')
-                      .set('execution_count', output.get('prompt_number'))
-                      .delete('prompt_number')
-                    // Purposefully continue onto the display_data
-                    // transformation by not returning or breaking the switch
-                  case 'display_data':
-                    const data = {};
-                    output = output
-                      .update('metadata', Map(), metadata => {
-                        const newMetadata = {};
-                        metadata
-                          .map((value, key) => {
-                            newMetadata[_mime_map[key] || key] = value;
-                          });
-                        return fromJS(newMetadata);
-                      })
-                      .map((value, key) => {
-                        if (['output_type', 'execution_count', 'metadata'].indexOf(key) === -1) {
-                          data[_mime_map[key] || key] = value;
-                          return null;
-                        }
-                        return value;
-                      })
-                      .filter(value => Boolean(value))
-                      .set('data', new Map(data));
-                    const jsonData = output.getIn(['data', 'application/json']);
-                    if (jsonData) {
-                      output = output.setIn(['data', 'application/json'], JSON.parse(output.getIn(['data', 'application/json'])));
-                    }
-                    // promote ascii bytes (from v2) to unicode
-                    ['image/png', 'image/jpeg'].forEach(imageMimetype => {
-                      const imageData = output.getIn(['data', imageMimetype]);
-                      if (imageData instanceof Buffer) {
-                        output = output.setIn(['data', imageMimetype], imageData.toString('ascii'));
+                .update('outputs', outputs => {
+                  return outputs.map(output => {
+                    switch (output.get('output_type')) {
+                    case 'pyerr':
+                      return output.set('output_type', 'error');
+                    case 'stream':
+                      return output
+                        .set('name', output.get('stream', 'stdout'))
+                        .delete('stream');
+                    case 'pyout':
+                      output = output
+                        .set('output_type', 'execute_result')
+                        .set('execution_count', output.get('prompt_number'))
+                        .delete('prompt_number');
+                      // Purposefully continue onto the display_data
+                      // transformation by not returning or breaking the switch
+                    case 'display_data':
+                      const data = {};
+                      output = output
+                        .update('metadata', Map(), metadata => {
+                          const newMetadata = {};
+                          metadata
+                            .map((value, key) => {
+                              newMetadata[_mime_map[key] || key] = value;
+                            });
+                          return fromJS(newMetadata);
+                        })
+                        .map((value, key) => {
+                          if (['output_type', 'execution_count', 'metadata'].indexOf(key) === -1) {
+                            data[_mime_map[key] || key] = value;
+                            return null;
+                          }
+                          return value;
+                        })
+                        .filter(value => Boolean(value))
+                        .set('data', new Map(data));
+                      const jsonData = output.getIn(['data', 'application/json']);
+                      if (jsonData) {
+                        output = output.setIn(['data', 'application/json'], JSON.parse(output.getIn(['data', 'application/json'])));
                       }
-                    });
-                    return output;
-                  }
+                      // promote ascii bytes (from v2) to unicode
+                      ['image/png', 'image/jpeg'].forEach(imageMimetype => {
+                        let imageData = output.getIn(['data', imageMimetype]);
+                        if (imageData instanceof Buffer) {
+                          imageData = imageData.toString('ascii');
+                          output = output.setIn(['data', imageMimetype], imageData);
+                        }
+                        if (imageData) {
+                          imageData = imageData
+                            .trim()
+                            .split('\n')
+                            .map(x=>x+'\n');
+                          output = output.setIn(['data', imageMimetype], imageData);
+                        }
+                      });
+                      return output;
+                    }
+                  });
                 });
             case 'heading':
               return newCell
                 .set('cell_type', 'markdown')
-                .set('source', _repeatString('#', newCell.get('level', 1)) + ' ' + newCell
-                  .get('source', '')
+                .set('source',
+                  (
+                    repeat('#', newCell.get('level', 1)) +
+                    ' ' +
+                    newCell.get('source', '').join(' ')
+                  )
                   .split('\n')
-                  .join(' ')
-                );
+                )
+                .delete('level');
             case 'html':
               return newCell.set('cell_type', 'markdown');
             default:
@@ -127,7 +139,7 @@ export function upgrade(nb, fromMajor, toMajor) {
   }
 
   while (fromMajor < toMajor) {
-    let upgrader = _upgraders[fromMajor++];
+    let upgrader = upgraders[++fromMajor];
     if (upgrader) {
       nb = upgrader(nb);
     } else {

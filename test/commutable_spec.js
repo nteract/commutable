@@ -25,7 +25,7 @@ import { valid } from 'notebook-test-data';
 
 describe('fromJS', () => {
   it('reads a notebook from disk, converting multi-line strings', () => {
-    return readJSON(valid[0])
+    return readJSON(valid.v4.multiples)
       .then((notebook) => {
         const nb = fromJS(notebook);
 
@@ -56,28 +56,28 @@ describe('fromJS', () => {
 
 describe('toJS', () => {
   it('returns something', () => {
-    return readJSON(valid[0])
+    return readJSON(valid.v4.multiples)
       .then((notebook) => {
         const nb = toJS(fromJS(notebook));
         expect(nb).to.not.be.null;
       });
   });
   it('removes cellMap', () => {
-    return readJSON(valid[0])
+    return readJSON(valid.v4.multiples)
       .then((notebook) => {
         const nb = toJS(fromJS(notebook));
         expect(nb.cellMap).to.be.undefined;
       });
   });
   it('removes cellOrder', () => {
-    return readJSON(valid[0])
+    return readJSON(valid.v4.multiples)
       .then((notebook) => {
         const nb = toJS(fromJS(notebook));
         expect(nb.cellOrder).to.be.undefined;
       });
   });
   it('creates cells', () => {
-    return readJSON(valid[0])
+    return readJSON(valid.v4.multiples)
       .then((notebook) => {
         const inMem = fromJS(notebook);
         const nb = toJS(inMem);
