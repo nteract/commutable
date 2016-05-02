@@ -1,6 +1,6 @@
 {
   "name": "commutable",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Immutable notebook model and operations",
   "main": "lib/index.js",
   "scripts": {
