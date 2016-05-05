@@ -85,6 +85,19 @@ describe('toJS', () => {
         expect(nb.cells.length).to.equal(inMem.get('cellOrder').count());
       });
   });
+  it('splits lines', () => {
+    return readJSON(valid.v4.multiples)
+      .then((notebook) => {
+        // Verify that in memory source is represented as a string.
+        const inMem = fromJS(notebook);
+        const text = inMem.getIn(['cellMap', inMem.getIn(['cellOrder', 0]), 'source']);
+        expect(text).to.be.a('string');
+        // Verify that it is broken into a list for disk.
+        const nb = toJS(inMem);
+        expect(nb.cells[0].source).to.be.an.instanceof(Array);
+        expect(nb.cells[0].source.join('')).to.equal(text);
+      });
+  });
 });
 
 describe('Notebook', () => {

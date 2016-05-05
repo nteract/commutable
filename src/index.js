@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 
-import { cleanMultilineNotebook } from './cleaning';
+import { cleanMultilineNotebook, makeMultilineNotebook } from './cleaning';
 import { v4 as uuid } from 'node-uuid';
 import { upgrade } from './convert';
 export { upgrade };
@@ -22,7 +22,7 @@ export function fromJS(notebookJS) {
 }
 
 export function toJS(notebook) {
-  return notebook
+  return makeMultilineNotebook(notebook
     .set('cells', notebook
       .get('cellOrder', new Immutable.List())
       .map(id =>
@@ -30,7 +30,7 @@ export function toJS(notebook) {
       )
     )
     .remove('cellOrder')
-    .remove('cellMap')
+    .remove('cellMap'))
     .toJS();
 }
 
