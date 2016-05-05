@@ -16,7 +16,7 @@ function cleanMultiline(item) {
  */
 function breakIntoMultiline(item) {
   // Use positive lookahead regex to split on newline and retain newline char
-  return typeof item === 'string' ? item.split(/(.+?\n)/g).filter(x=>x!=='') : item;
+  return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(x=>x!=='') : item;
 }
 
 /**
