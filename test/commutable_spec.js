@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { v4 as uuid } from 'node-uuid';
+import { v4 as uuid } from 'uuid';
 
 import Immutable from 'immutable';
 
