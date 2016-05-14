@@ -51,6 +51,7 @@ const upgraders = {
                 .delete('prompt_number')
                 .update('outputs', outputs =>
                   outputs.map(initialOutput => {
+                    const data = {};
                     let output = initialOutput;
                     switch (output.get('output_type')) {
                       case 'pyerr':
@@ -67,7 +68,6 @@ const upgraders = {
                             .set('execution_count', output.get('prompt_number'))
                             .delete('prompt_number');
                         }
-                        const data = {};
                         output = output
                           .update('metadata', new Map(), metadata => {
                             const newMetadata = {};
@@ -87,8 +87,7 @@ const upgraders = {
                           })
                           .filter(value => Boolean(value))
                           .set('data', new Map(data));
-                        const jsonData = output.getIn(['data', 'application/json']);
-                        if (jsonData) {
+                        if (output.hasIn(['data', 'application/json'])) {
                           output = output.setIn(['data', 'application/json'],
                                     JSON.parse(output.getIn(['data', 'application/json'])));
                         }
