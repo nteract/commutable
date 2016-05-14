@@ -16,7 +16,7 @@ function cleanMultiline(item) {
  */
 function breakIntoMultiline(item) {
   // Use positive lookahead regex to split on newline and retain newline char
-  return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(x=>x!=='') : item;
+  return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(x => x !== '') : item;
 }
 
 /**
@@ -38,10 +38,10 @@ function processOutputData(processor, data) {
  */
 function processOutputs(processor, outputs) {
   // If outputs is undefined, we just return it back
-  return outputs ? outputs.map(output => {
-    return output.update('text', processor)
-                 .update('data', processOutputData.bind(this, processor));
-  }) : outputs;
+  return outputs ? outputs.map(output =>
+    output.update('text', processor)
+          .update('data', processOutputData.bind(this, processor))
+  ) : outputs;
 }
 
 /**
