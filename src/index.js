@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 
 import { cleanMultilineNotebook, makeMultilineNotebook } from './cleaning';
-import { v4 as uuid } from 'node-uuid';
+import { v4 as uuid } from 'uuid';
 import { upgrade } from './convert';
 export { upgrade };
 

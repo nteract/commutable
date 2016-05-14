@@ -28,7 +28,7 @@ npm install --save commutable
 ### Fresh notebook
 
 ```js
-> const uuid = require('node-uuid').v4
+> const uuid = require('uuid').v4
 undefined
 > const commutable = require('.')
 undefined
