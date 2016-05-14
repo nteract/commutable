@@ -36,25 +36,25 @@ export function toJS(notebook) {
 
 
 export const emptyNotebook = fromJS({
-  'cells': [],
-  'nbformat': 4,
-  'nbformat_minor': 0,
+  cells: [],
+  nbformat: 4,
+  nbformat_minor: 0,
 });
 
 export const emptyMarkdownCell = Immutable.fromJS({
-  'cell_type': 'markdown',
-  'metadata': {},
-  'source': '',
+  cell_type: 'markdown',
+  metadata: {},
+  source: '',
 });
 
 export const emptyCodeCell = Immutable.fromJS({
-  'cell_type': 'code',
-  'execution_count': null,
-  'metadata': {
-    'collapsed': false,
+  cell_type: 'code',
+  execution_count: null,
+  metadata: {
+    collapsed: false,
   },
-  'source': '',
-  'outputs': [],
+  source: '',
+  outputs: [],
 });
 
 export function insertCellAt(notebook, cell, cellID, index) {
@@ -67,10 +67,7 @@ export function insertCellAfter(notebook, cell, cellID, priorCellID) {
   return insertCellAt(notebook, cell, cellID, notebook.get('cellOrder').indexOf(priorCellID) + 1);
 }
 
-export function appendCell(notebook, cell, cellID) {
-  if(!cellID) {
-    cellID = uuid();
-  }
+export function appendCell(notebook, cell, cellID = uuid()) {
   return notebook.setIn(['cellMap', cellID], cell)
                  .set('cellOrder',
                   notebook.get('cellOrder').push(cellID));
