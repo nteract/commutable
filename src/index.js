@@ -77,6 +77,10 @@ export function updateSource(notebook, cellID, source) {
   return notebook.setIn(['cellMap', cellID, 'source'], source);
 }
 
+export function clearCellOutput(notebook, cellID) {
+  return notebook.setIn(['cellMap', cellID, 'outputs'], new Immutable.List());
+}
+
 export function updateOutputs(notebook, cellID, outputs) {
   return notebook.setIn(['cellMap', cellID, 'outputs'], outputs);
 }
