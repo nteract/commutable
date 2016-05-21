@@ -53,4 +53,148 @@ describe('parse outputs', () => {
     const upgraded = upgrade(test, 3, 4);
     expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'output_type'])).to.equal("error");
   });
+  it('parse outputs with metadata', () => {
+    const test = fromJS({
+      "metadata": {
+        "name": "test_metadata_output",
+      },
+      "nbformat": 3,
+      "nbformat_minor": 0,
+      "worksheets": [
+        {
+          "cells": [
+            {
+              "cell_type": "code",
+              "metadata": {},
+              "source": ["print('with metadata')"],
+              "execution_count": 1,
+              "outputs": [{
+                "output_type": "display_data",
+                "stream": "stdout",
+                "metadata": {
+                  "test_key": "test_value",
+                },
+                "text": [
+                  "with metadata\n",
+                ],
+              }]
+            },
+          ],
+        }
+      ]
+    });
+    const upgraded = upgrade(test, 3, 4);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'metadata']).size).to.equal(1);
+  });
+  it('parse outputs with JSON', () => {
+    const test = fromJS({
+      "metadata": {
+        "name": "test_json_outputs",
+      },
+      "nbformat": 3,
+      "nbformat_minor": 0,
+      "worksheets": [
+        {
+          "cells": [
+            {
+              "cell_type": "code",
+              "metadata": {},
+              "source": ["print('with metadata')"],
+              "execution_count": 1,
+              "outputs": [{
+                "data": {
+                  "application/json": [
+                    "{'value': 'i love me some json'}"
+                  ],
+                },
+              }]
+            },
+          ],
+        }
+      ]
+    });
+    const upgraded = upgrade(test, 3, 4);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'application/json']).size).to.equal(1);
+  });
+  it('parse outputs with image data in buffer', () => {
+    const test = fromJS({
+      "metadata": {
+        "name": "test_image_outputs",
+      },
+      "nbformat": 3,
+      "nbformat_minor": 0,
+      "worksheets": [
+        {
+          "cells": [
+            {
+              "cell_type": "code",
+              "metadata": {},
+              "source": ["# display image here"],
+              "execution_count": 1,
+              "outputs": [{
+                "data": {
+                  "image/png": "",
+                },
+              }]
+            },
+          ],
+        }
+      ]
+    });
+    const upgraded = upgrade(test, 3, 4);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'image/png']).size).to.equal(1);
+  });
+  it('should leave unkown outputs as is', () => {
+    const test = fromJS({
+      "metadata": {
+        "name": "test_unkown_output",
+      },
+      "nbformat": 3,
+      "nbformat_minor": 0,
+      "worksheets": [
+        {
+          "cells": [
+            {
+              "cell_type": "code",
+              "metadata": {},
+              "source": ["print('unkown output')"],
+              "outputs": [{
+                "output_type": "unknown" ,
+              }]
+            },
+          ],
+        }
+      ]
+    });
+    const upgraded = upgrade(test, 3, 4);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'output_type'])).to.equal('unknown');
+  });
+});
+
+describe('parse cellTypes', () => {
+  it('should parse HTML cells correctly', () => {
+    const test = fromJS({
+      "metadata": {
+        "name": "test_html_cells",
+      },
+      "nbformat": 3,
+      "nbformat_minor": 0,
+      "worksheets": [
+        {
+          "cells": [
+            {
+              "cell_type": "html",
+              "metadata": {},
+              "source": ["<h1>HTML Cell</h1>"],
+              "outputs": [{}]
+            },
+          ],
+        }
+      ]
+    });
+    const upgraded = upgrade(test, 3, 4);
+    expect(upgraded.getIn(['cells', 0, 'cell_type'])).to.equal("markdown");
+  });
 });
