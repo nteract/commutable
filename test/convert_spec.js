@@ -16,6 +16,12 @@ describe('upgrade', () => {
       nb4.setIn(['metadata', 'orig_nbformat'], 3).toJS()
     );
   });
+  it('should error for downgrades', () => {
+    expect(() => upgrade(nb4, 4, 3)).to.throw(Error);
+  });
+  it('should error for unkown versions', () => {
+    expect(() => upgrade(nb4, 9, 10)).to.throw(Error);
+  });
 });
 
 describe('parse outputs', () => {
