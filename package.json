@@ -45,6 +45,7 @@
     "chai": "^3.4.1",
     "chai-immutable": "^1.5.3",
     "chalk": "^1.1.1",
+    "codecov": "^1.0.1",
     "eslint": "^2.10.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-babel": "^3.0.0",
@@ -54,6 +55,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^2.3.4",
     "notebook-test-data": "0.0.2",
+    "nyc": "^6.4.4",
     "rimraf": "^2.5.0"
   }
 }
