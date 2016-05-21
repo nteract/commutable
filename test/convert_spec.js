@@ -134,7 +134,7 @@ describe('parse outputs', () => {
               "execution_count": 1,
               "outputs": [{
                 "data": {
-                  "image/png": "",
+                  "image/png": new Buffer("PNGIHDRKIDATxYw5L1LlFMM/migzWUadOadLUd+43PIfPU9VU5"),
                 },
               }]
             },
@@ -144,7 +144,7 @@ describe('parse outputs', () => {
     });
     const upgraded = upgrade(test, 3, 4);
     expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
-    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'image/png']).size).to.equal(1);
+    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'image/png'])).to.not.be.null;
   });
   it('should leave unkown outputs as is', () => {
     const test = fromJS({
