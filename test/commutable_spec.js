@@ -18,6 +18,7 @@ import {
   updateSource,
   updateExecutionCount,
   updateOutputs,
+  clearCellOutput,
 } from '../src';
 
 import { readJSON } from './notebook_helpers';
@@ -281,5 +282,22 @@ describe('updateOutputs', () => {
                 appendCell(emptyNotebook, emptyCodeCell, id),
                 id, new Immutable.List([output]));
     expect(nb.getIn(['cellMap', id, 'outputs', 0, 'text'])).to.equal('[multiline stream text]');
+  });
+});
+
+describe('clearCellOutput', () => {
+  it('clears the output of a cell by ID', () => {
+    const id = uuid();
+    const output = Immutable.fromJS({
+      'output_type': 'execute_result',
+      'name': 'stdout',
+      'test': 'what a pretty outpyt',
+    });
+    const nb = clearCellOutput(
+                updateOutputs(appendCell(emptyNotebook, emptyCodeCell, id),
+                  id,
+                  new Immutable.List([output])),
+                id);
+    expect(nb.getIn(['cellMap', id, 'outputs'])).to.equal(Immutable.List.of());
   });
 });
