@@ -102,10 +102,9 @@ describe('parse outputs', () => {
               "source": ["print('with metadata')"],
               "execution_count": 1,
               "outputs": [{
+                "output_type": "display_data",
                 "data": {
-                  "application/json": [
-                    "{'value': 'i love me some json'}"
-                  ],
+                  "application/json": ["{'value': 'i love me some json'}"],
                 },
               }]
             },
@@ -115,7 +114,6 @@ describe('parse outputs', () => {
     });
     const upgraded = upgrade(test, 3, 4);
     expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
-    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'application/json']).size).to.equal(1);
   });
   it('parse outputs with image data in buffer', () => {
     const test = fromJS({
