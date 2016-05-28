@@ -5,6 +5,7 @@ import { cleanMultilineNotebook } from '../src/cleaning';
 import { valid } from 'notebook-test-data';
 import * as fs from 'fs';
 
+const nb2 = fromJS(JSON.parse(fs.readFileSync(valid.v2.v2notebook)));
 const nb3 = fromJS(JSON.parse(fs.readFileSync(valid.v3.v3notebook)));
 const nb4 = fromJS(JSON.parse(fs.readFileSync(valid.v4.v4notebook)));
 
@@ -116,33 +117,8 @@ describe('parse outputs', () => {
     expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
   });
   it('parse outputs with image data in buffer', () => {
-    const test = fromJS({
-      "metadata": {
-        "name": "test_image_outputs",
-      },
-      "nbformat": 3,
-      "nbformat_minor": 0,
-      "worksheets": [
-        {
-          "cells": [
-            {
-              "cell_type": "code",
-              "metadata": {},
-              "source": ["# display image here"],
-              "execution_count": 1,
-              "outputs": [{
-                "data": {
-                  "image/png": new Buffer("PNGIHDRKIDATxYw5L1LlFMM/migzWUadOadLUd+43PIfPU9VU5"),
-                },
-              }]
-            },
-          ],
-        }
-      ]
-    });
-    const upgraded = upgrade(test, 3, 4);
-    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
-    expect(upgraded.getIn(['cells', 0, 'outputs', 0, 'data', 'image/png'])).to.not.be.null;
+    const upgraded = upgrade(nb2, 2, 4);
+    expect(upgraded.get(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
   });
   it('should leave unkown outputs as is', () => {
     const test = fromJS({
