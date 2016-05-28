@@ -118,7 +118,8 @@ describe('parse outputs', () => {
   });
   it('parse outputs with image data in buffer', () => {
     const upgraded = upgrade(nb2, 2, 4);
-    expect(upgraded.get(['cells', 0, 'outputs', 0, 'data']).size).to.equal(1);
+    expect(upgraded.getIn(['cells', 18, 'outputs']).size).to.equal(3);
+    expect(upgraded.getIn(['cells', 18, 'outputs', 2, 'output_type'])).to.equal('display_data');
   });
   it('should leave unkown outputs as is', () => {
     const test = fromJS({
