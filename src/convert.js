@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+import imageType from 'image-type';
 import repeat from 'lodash.repeat';
 
 /**
@@ -94,10 +95,19 @@ const upgraders = {
                         // promote ascii bytes (from v2) to unicode
                         ['image/png', 'image/jpeg'].forEach(imageMimetype => {
                           let imageData = output.getIn(['data', imageMimetype]);
-                          if (imageData instanceof Buffer) {
+                          let imageBuffer;
+
+                          try {
+                            imageBuffer = Buffer.from(imageData, 'ascii');
+                          } catch (error) {
+                            imageBuffer = null;
+                          }
+
+                          if (imageBuffer && imageType(imageBuffer)) {
                             imageData = imageData.toString('ascii');
                             output = output.setIn(['data', imageMimetype], imageData);
                           }
+
                           if (imageData) {
                             imageData = imageData
                               .trim()
