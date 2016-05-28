@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/nteract/commutable#readme",
   "dependencies": {
+    "image-type": "^2.1.0",
     "immutable": "^3.7.6",
     "lodash.repeat": "^4.0.0",
     "uuid": "^2.0.2"
