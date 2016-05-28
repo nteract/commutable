@@ -145,17 +145,6 @@ const upgraders = {
       .deleteIn(['metadata', 'signature']), 4);
   },
   3: function to3(nb) {
-    const mime_type = {
-      text: 'text/plain',
-      html: 'text/html',
-      svg: 'image/svg+xml',
-      png: 'image/png',
-      jpeg: 'image/jpeg',
-      latex: 'text/latex',
-      json: 'application/json',
-      javascript: 'application/javascript',
-    };
-
     return throwIfInvalid(throwIfInvalid(nb, 2)
         .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
         .set('nbformat', 3)
@@ -167,8 +156,8 @@ const upgraders = {
             return newCell;
           })
         )
-      )
-    }
+    );
+  },
 };
 
 
