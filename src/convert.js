@@ -144,7 +144,33 @@ const upgraders = {
       .deleteIn(['metadata', 'name'])
       .deleteIn(['metadata', 'signature']), 4);
   },
+  3: function to3(nb) {
+    const mime_type = {
+      text: 'text/plain',
+      html: 'text/html',
+      svg: 'image/svg+xml',
+      png: 'image/png',
+      jpeg: 'image/jpeg',
+      latex: 'text/latex',
+      json: 'application/json',
+      javascript: 'application/javascript',
+    };
+
+    return throwIfInvalid(throwIfInvalid(nb, 2)
+        .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
+        .set('nbformat', 3)
+        .set('nbformat_minor', 0)
+        .setIn(['worksheets', 'cels'], nb
+          .getIn(['worksheets', 0, 'cells'])
+          .map(cell => {
+            const newCell = cell.set('metadata', new Map());
+            return newCell;
+          })
+        )
+      )
+    }
 };
+
 
 export function upgrade(nb, fromMajor, toMajor) {
   if (toMajor < fromMajor) {
