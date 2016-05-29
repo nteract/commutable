@@ -23,6 +23,11 @@ describe('upgrade', () => {
   it('should error for unkown versions', () => {
     expect(() => upgrade(nb4, 9, 10)).to.throw(Error);
   });
+  it('2to4', () => {
+    const upgraded = upgrade(nb2, 2, 4);
+    expect(upgraded.getIn(['metadata', 'orig_nbformat'])).to.equal(2);
+    expect(upgraded.get('worksheets')).to.be.undefined;
+  });
 });
 
 describe('parse outputs', () => {
