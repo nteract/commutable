@@ -89,15 +89,13 @@ const upgraders = {
                           .set('data', new Map(data));
                         if (output.hasIn(['data', 'application/json'])) {
                           output = output.setIn(['data', 'application/json'],
-                                    JSON.parse(output.getIn(['data', 'application/json'])));
+                                    JSON.parse(output
+                                      .getIn(['data', 'application/json'])
+                                      .toJS()));
                         }
                         // promote ascii bytes (from v2) to unicode
                         ['image/png', 'image/jpeg'].forEach(imageMimetype => {
                           let imageData = output.getIn(['data', imageMimetype]);
-                          if (imageData instanceof Buffer) {
-                            imageData = imageData.toString('ascii');
-                            output = output.setIn(['data', imageMimetype], imageData);
-                          }
                           if (imageData) {
                             imageData = imageData
                               .trim()
@@ -134,7 +132,22 @@ const upgraders = {
       .deleteIn(['metadata', 'name'])
       .deleteIn(['metadata', 'signature']), 4);
   },
+  3: function to3(nb) {
+    return throwIfInvalid(throwIfInvalid(nb, 2)
+        .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
+        .set('nbformat', 3)
+        .set('nbformat_minor', 0)
+        .setIn(['worksheets', 'cels'], nb
+          .getIn(['worksheets', 0, 'cells'])
+          .map(cell => {
+            const newCell = cell.set('metadata', new Map());
+            return newCell;
+          })
+        )
+    );
+  },
 };
+
 
 export function upgrade(nb, fromMajor, toMajor) {
   if (toMajor < fromMajor) {
