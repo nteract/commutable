@@ -90,7 +90,9 @@ const upgraders = {
                           .set('data', new Map(data));
                         if (output.hasIn(['data', 'application/json'])) {
                           output = output.setIn(['data', 'application/json'],
-                                    JSON.parse(output.getIn(['data', 'application/json'])));
+                                    JSON.parse(output
+                                      .getIn(['data', 'application/json'])
+                                      .toJS()));
                         }
                         // promote ascii bytes (from v2) to unicode
                         ['image/png', 'image/jpeg'].forEach(imageMimetype => {
