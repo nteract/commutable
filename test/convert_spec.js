@@ -104,10 +104,9 @@ describe('parse outputs', () => {
               "execution_count": 1,
               "outputs": [{
                 "output_type": "display_data",
-                "data": {
-                  "application/json": ["{'value': 'i love me some json'}"],
-                },
-              }]
+                "metadata": {},
+                "json": ['{"value": "i love me som json"}'],
+              }],
             },
           ],
         }
