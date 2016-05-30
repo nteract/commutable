@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "immutable": "registry:npm/immutable#3.7.6+20160411060006",
-    "lodash.repeat": "registry:npm/lodash.repeat#4.0.3+20160416211519",
-    "uuid": "registry:npm/uuid#2.0.2+20160503013124"
+    "lodash.repeat": "file:definitions/lodash.repeat.d.ts",
+    "uuid": "file:definitions/uuid.d.ts"
   },
   "globalDependencies": {
     "node": "registry:env/node#4.0.0+20160507210304"
