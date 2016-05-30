@@ -1,4 +1,7 @@
-import Immutable from 'immutable';
+import {
+    fromJS as _fromJS,
+    List,
+} from 'immutable';
 
 import { cleanMultilineNotebook, makeMultilineNotebook } from './cleaning';
 import { v4 as uuid } from 'uuid';
@@ -8,7 +11,7 @@ export { upgrade };
 export function fromJS(notebookJS) {
   // TODO: Check the version of the notebook and convert it to the expected
   // version for in memory operations.
-  const immnb = cleanMultilineNotebook(Immutable.fromJS(notebookJS));
+  const immnb = cleanMultilineNotebook(_fromJS(notebookJS));
 
   const cellData = {};
   return immnb
@@ -18,15 +21,15 @@ export function fromJS(notebookJS) {
       return id;
     }))
     .remove('cells')
-    .set('cellMap', Immutable.fromJS(cellData));
+    .set('cellMap', _fromJS(cellData));
 }
 
 export function toJS(notebook) {
   return makeMultilineNotebook(notebook
     .set('cells', notebook
-      .get('cellOrder', new Immutable.List())
+      .get('cellOrder', List<string>())
       .map(id =>
-        notebook.getIn(['cellMap', id], Immutable.fromJS({}))
+        notebook.getIn(['cellMap', id], fromJS({}))
       )
     )
     .remove('cellOrder')
@@ -41,13 +44,13 @@ export const emptyNotebook = fromJS({
   nbformat_minor: 0,
 });
 
-export const emptyMarkdownCell = Immutable.fromJS({
+export const emptyMarkdownCell = _fromJS({
   cell_type: 'markdown',
   metadata: {},
   source: '',
 });
 
-export const emptyCodeCell = Immutable.fromJS({
+export const emptyCodeCell = _fromJS({
   cell_type: 'code',
   execution_count: null,
   metadata: {
@@ -78,7 +81,7 @@ export function updateSource(notebook, cellID, source) {
 }
 
 export function clearCellOutput(notebook, cellID) {
-  return notebook.setIn(['cellMap', cellID, 'outputs'], new Immutable.List());
+  return notebook.setIn(['cellMap', cellID, 'outputs'], List<any>());
 }
 
 export function updateOutputs(notebook, cellID, outputs) {
