@@ -1,17 +1,19 @@
-import Immutable from 'immutable';
-
+import {
+  List,
+  Map,
+} from 'immutable';
 /**
  * Concatenate all "multi-line" strings if item is a list
- * @param {Immutable.List|string} item to join
+ * @param {List|string} item to join
  * @return {string} plain ol' string
  */
 function cleanMultiline(item) {
-  return item instanceof Immutable.List ? item.join('') : item;
+  return item instanceof List ? item.join('') : item;
 }
 
 /**
  * Break all "multi-line" strings into a list
- * @param {Immutable.List|string} item to join
+ * @param {List|string} item to join
  * @return {string} plain ol' string
  */
 function breakIntoMultiline(item) {
@@ -22,8 +24,8 @@ function breakIntoMultiline(item) {
 /**
  * Concatenate all "multi-line" strings from a cell's data section
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} data display data possibly in need of cleaning
- * @return {Immutable.Map} display data without multi-line strings
+ * @param {Map} data display data possibly in need of cleaning
+ * @return {Map} display data without multi-line strings
  */
 function processOutputData(processor, data) {
   // If data is undefined, we just return it back
@@ -33,8 +35,8 @@ function processOutputData(processor, data) {
 /**
  * Concatenate all "multi-line" strings from a cell's outputs
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} outputs a cell's outputs
- * @return {Immutable.Map} cell outputs without multi-line strings
+ * @param {Map} outputs a cell's outputs
+ * @return {Map} cell outputs without multi-line strings
  */
 function processOutputs(processor, outputs) {
   // If outputs is undefined, we just return it back
@@ -47,8 +49,8 @@ function processOutputs(processor, outputs) {
 /**
  * Concatenate all "multi-line" strings from a cell (on disk -> in-mem format)
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} cell the cell to clean up
- * @return {Immutable.Map} cell without multi-line strings
+ * @param {Map} cell the cell to clean up
+ * @return {Map} cell without multi-line strings
  */
 function processCell(processor, cell) {
   return cell.update('source', processor)
@@ -58,8 +60,8 @@ function processCell(processor, cell) {
 /**
  * Concatenate all "multi-line" strings from a cell
  * @param {Function} processor, map function applied to values
- * @param {Immutable.List} cells the cell to clean up
- * @return {Immutable.Map} cell without multi-line strings
+ * @param {List} cells the cell to clean up
+ * @return {Map} cell without multi-line strings
  */
 function processCells(processor, cells) {
   return cells.map(processCell.bind(this, processor));
@@ -67,8 +69,8 @@ function processCells(processor, cells) {
 
 /**
  * Concatenate all "multi-line" strings from a notebook (on disk format -> in-memory)
- * @param {Immutable.Map} nb notebook
- * @return {Immutable.Map} notebook without multi-line strings
+ * @param {Map} nb notebook
+ * @return {Map} notebook without multi-line strings
  */
 export function cleanMultilineNotebook(nb) {
   return nb.update('cells', processCells.bind(this, cleanMultiline));
@@ -78,8 +80,8 @@ export function cleanMultilineNotebook(nb) {
 /**
  * Breaks long lines of the notebook into multiple lines to make opening the
  * JSON files in a text editor directly a better experience.
- * @param  {Immutable.Map} nb
- * @return {Immutable.Map} nb
+ * @param  {Map} nb
+ * @return {Map} nb
  */
 export function makeMultilineNotebook(nb) {
   return nb.update('cells', processCells.bind(this, breakIntoMultiline));
