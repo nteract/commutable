@@ -9,8 +9,6 @@
     "files": [
         "convert.ts",
         "cleaning.ts",
-        "typings.d.ts",
-        "index.ts",
-        "../typings/lodash/lodash.d.ts"
+        "index.ts"
     ]
 }
