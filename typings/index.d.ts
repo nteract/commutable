@@ -1,3 +1,3 @@
 /// <reference path="modules/immutable/index.d.ts" />
-/// <reference path="modules/lodash/index.d.ts" />
-/// <reference path="modules/node-uuid/index.d.ts" />
+/// <reference path="modules/lodash.repeat/index.d.ts" />
+/// <reference path="modules/uuid/index.d.ts" />

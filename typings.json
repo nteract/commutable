@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "immutable": "registry:npm/immutable#3.7.6+20160411060006",
-    "lodash": "registry:npm/lodash#4.0.0+20160416211519",
-    "node-uuid": "registry:npm/node-uuid#1.4.7+20160503013124"
+    "lodash.repeat": "registry:npm/lodash.repeat#4.0.3+20160416211519",
+    "uuid": "registry:npm/uuid#2.0.2+20160503013124"
   }
 }
