@@ -2,17 +2,6 @@ import { Map, List, fromJS } from 'immutable';
 import repeat from 'lodash.repeat';
 
 /**
- * Throws if the notebook is invalid for a given major revision
- * @param  {Map} nb       immutable map notebook object
- * @param  {number} major nbformat major revision
- * @return {Map} nb
- */
-function throwIfInvalid(nb) {
-  // TODO: Implement check
-  return nb;
-}
-
-/**
  * Dictionary of functions that perform upgrades.  The keys are the major
  * revision that the functions upgrade too.
  */
@@ -29,7 +18,7 @@ const upgraders = {
       javascript: 'application/javascript',
     };
 
-    return throwIfInvalid(throwIfInvalid(nb, 3)
+    return nb
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
       .set('nbformat', 4)
       .set('nbformat_minor', 0)
@@ -130,21 +119,20 @@ const upgraders = {
       )
       .delete('worksheets')
       .deleteIn(['metadata', 'name'])
-      .deleteIn(['metadata', 'signature']), 4);
+      .deleteIn(['metadata', 'signature']);
   },
   3: function to3(nb) {
-    return throwIfInvalid(throwIfInvalid(nb, 2)
-        .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
-        .set('nbformat', 3)
-        .set('nbformat_minor', 0)
-        .setIn(['worksheets', 'cels'], nb
-          .getIn(['worksheets', 0, 'cells'])
-          .map(cell => {
-            const newCell = cell.set('metadata', new Map());
-            return newCell;
-          })
-        )
-    );
+    return nb
+      .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
+      .set('nbformat', 3)
+      .set('nbformat_minor', 0)
+      .setIn(['worksheets', 'cels'], nb
+        .getIn(['worksheets', 0, 'cells'])
+        .map(cell => {
+          const newCell = cell.set('metadata', new Map());
+          return newCell;
+        })
+      );
   },
 };
 
