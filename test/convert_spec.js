@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { upgrade } from '../src';
+import { upgrade } from '../lib';
 import { fromJS } from 'immutable';
-import { cleanMultilineNotebook } from '../src/cleaning';
+import { cleanMultilineNotebook } from '../lib/cleaning';
 import { valid } from 'notebook-test-data';
 import * as fs from 'fs';
 

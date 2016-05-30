@@ -11,7 +11,7 @@
     "build:ts": "typings install && tsc -p ./src",
     "build:es5": "babel src --out-dir lib/ --source-maps",
     "lint": "eslint src",
-    "test": "mocha --compilers js:babel-core/register --recursive",
+    "test": "npm run build && mocha --compilers js:babel-core/register --recursive",
     "test:watch": "npm run test -- --watch",
     "posttest": "npm run lint",
     "clean": "rimraf lib/*",
