@@ -8,7 +8,7 @@
     "prepublish": "npm run build",
     "prebuild": "mkdirp lib && npm run clean",
     "build": "npm run build:ts",
-    "build:ts": "tsc -p ./src && typings bundle -o out/",
+    "build:ts": "typings install && tsc -p ./src",
     "build:es5": "babel src --out-dir lib/ --source-maps",
     "lint": "eslint src",
     "test": "mocha --compilers js:babel-core/register --recursive",
