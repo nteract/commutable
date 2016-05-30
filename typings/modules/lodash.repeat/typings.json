@@ -2,7 +2,7 @@
   "resolution": "main",
   "tree": {
     "raw": "registry:npm/lodash.repeat#4.0.3+20160416211519",
-    "homepage": "https://github.com/lodash/lodash.repeat",
+    "homepage": "https://github.com/lodash/lodash/lodash.repeat",
     "main": "index.d.ts",
     "version": "4.0.3",
     "global": false,
