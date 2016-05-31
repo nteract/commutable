@@ -6,7 +6,7 @@ var repeat = require('lodash.repeat');
  * revision that the functions upgrade too.
  */
 const upgraders = {
-  4: function to4(nb) {
+  4: function to4(nb : Map<string, any>) {
     const mime_map = {
       text: 'text/plain',
       html: 'text/html',
@@ -121,7 +121,7 @@ const upgraders = {
       .deleteIn(['metadata', 'name'])
       .deleteIn(['metadata', 'signature']);
   },
-  3: function to3(nb) {
+  3: function to3(nb : Map<string, any>) {
     return nb
         .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
         .set('nbformat', 3)
@@ -137,7 +137,7 @@ const upgraders = {
 };
 
 
-export function upgrade(nb, fromMajor, toMajor) {
+export function upgrade(nb : Map<string, any>, fromMajor : number, toMajor : number) {
   if (toMajor < fromMajor) {
     throw new Error('cannot downgrade');
   }
