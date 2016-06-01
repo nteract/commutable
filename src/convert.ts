@@ -123,16 +123,16 @@ const upgraders = {
   },
   3: function to3(nb : Map<string, any>) {
     return nb
-        .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
-        .set('nbformat', 3)
-        .set('nbformat_minor', 0)
-        .setIn(['worksheets', 'cels'], nb
-          .getIn(['worksheets', 0, 'cells'])
-          .map(cell => {
-            const newCell = cell.set('metadata', Map<string, any>());
-            return newCell;
-          })
-        );
+      .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
+      .set('nbformat', 3)
+      .set('nbformat_minor', 0)
+      .setIn(['worksheets', 'cels'], nb
+        .getIn(['worksheets', 0, 'cells'])
+        .map(cell => {
+          const newCell = cell.set('metadata', Map<string, any>());
+          return newCell;
+        })
+      );
   },
 };
 

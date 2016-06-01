@@ -38,7 +38,6 @@ export function toJS(notebook : Map<string, any>) {
     .toJS();
 }
 
-
 export const emptyNotebook = fromJS({
   cells: [],
   nbformat: 4,
