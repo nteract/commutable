@@ -86,3 +86,29 @@ export function cleanMultilineNotebook(nb : Map<string, any>) {
 export function makeMultilineNotebook(nb : Map<string, any>) {
   return nb.update('cells', processCells.bind(this, breakIntoMultiline));
 }
+
+/**
+ * @param {string} string The string to repeat
+ * @param {number} n The number of times to repeat the string
+ * @returns {string} Returns the repeated string
+*/
+function repeat(string : string, n : number) {A
+  var result = '';
+  var MAX_SAFE_INTEGER = 9007199254740991;
+
+  if (!string || n < 1 || n > MAX_SAFE_INTEGER) {
+    return result;
+  }
+
+  do {
+    if (n % 2) {
+      result += string;
+    }
+    n = Math.floor(n / 2);
+    if (n) {
+      string += string;
+    }
+  } while (n);
+
+  return result;
+}
