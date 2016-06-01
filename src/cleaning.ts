@@ -1,20 +1,22 @@
-import Immutable from 'immutable';
-
+import {
+  List,
+  Map,
+} from 'immutable';
 /**
  * Concatenate all "multi-line" strings if item is a list
- * @param {Immutable.List|string} item to join
+ * @param {List|string} item to join
  * @return {string} plain ol' string
  */
-function cleanMultiline(item) {
-  return item instanceof Immutable.List ? item.join('') : item;
+function cleanMultiline(item : List<string>) {
+  return item ? item.join('') : item;
 }
 
 /**
  * Break all "multi-line" strings into a list
- * @param {Immutable.List|string} item to join
+ * @param {List|string} item to join
  * @return {string} plain ol' string
  */
-function breakIntoMultiline(item) {
+ function breakIntoMultiline(item : (List<string> | string)) {
   // Use positive lookahead regex to split on newline and retain newline char
   return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(x => x !== '') : item;
 }
@@ -22,10 +24,10 @@ function breakIntoMultiline(item) {
 /**
  * Concatenate all "multi-line" strings from a cell's data section
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} data display data possibly in need of cleaning
- * @return {Immutable.Map} display data without multi-line strings
+ * @param {Map} data display data possibly in need of cleaning
+ * @return {Map} display data without multi-line strings
  */
-function processOutputData(processor, data) {
+function processOutputData(processor, data : Map<string, any>) {
   // If data is undefined, we just return it back
   return data ? data.map(processor) : data;
 }
@@ -33,10 +35,10 @@ function processOutputData(processor, data) {
 /**
  * Concatenate all "multi-line" strings from a cell's outputs
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} outputs a cell's outputs
- * @return {Immutable.Map} cell outputs without multi-line strings
+ * @param {Map} outputs a cell's outputs
+ * @return {Map} cell outputs without multi-line strings
  */
-function processOutputs(processor, outputs) {
+function processOutputs(processor, outputs : Map<string, any>) {
   // If outputs is undefined, we just return it back
   return outputs ? outputs.map(output =>
     output.update('text', processor)
@@ -47,10 +49,10 @@ function processOutputs(processor, outputs) {
 /**
  * Concatenate all "multi-line" strings from a cell (on disk -> in-mem format)
  * @param {Function} processor, map function applied to values
- * @param {Immutable.Map} cell the cell to clean up
- * @return {Immutable.Map} cell without multi-line strings
+ * @param {Map} cell the cell to clean up
+ * @return {Map} cell without multi-line strings
  */
-function processCell(processor, cell) {
+function processCell(processor, cell : Map<string, any>) {
   return cell.update('source', processor)
              .update('outputs', processOutputs.bind(this, processor));
 }
@@ -58,19 +60,19 @@ function processCell(processor, cell) {
 /**
  * Concatenate all "multi-line" strings from a cell
  * @param {Function} processor, map function applied to values
- * @param {Immutable.List} cells the cell to clean up
- * @return {Immutable.Map} cell without multi-line strings
+ * @param {List} cells the cell to clean up
+ * @return {Map} cell without multi-line strings
  */
-function processCells(processor, cells) {
+function processCells(processor, cells : List<Map<string, any>>) {
   return cells.map(processCell.bind(this, processor));
 }
 
 /**
  * Concatenate all "multi-line" strings from a notebook (on disk format -> in-memory)
- * @param {Immutable.Map} nb notebook
- * @return {Immutable.Map} notebook without multi-line strings
+ * @param {Map} nb notebook
+ * @return {Map} notebook without multi-line strings
  */
-export function cleanMultilineNotebook(nb) {
+export function cleanMultilineNotebook(nb : Map<string, any>) {
   return nb.update('cells', processCells.bind(this, cleanMultiline));
 }
 
@@ -78,9 +80,35 @@ export function cleanMultilineNotebook(nb) {
 /**
  * Breaks long lines of the notebook into multiple lines to make opening the
  * JSON files in a text editor directly a better experience.
- * @param  {Immutable.Map} nb
- * @return {Immutable.Map} nb
+ * @param  {Map} nb
+ * @return {Map} nb
  */
-export function makeMultilineNotebook(nb) {
+export function makeMultilineNotebook(nb : Map<string, any>) {
   return nb.update('cells', processCells.bind(this, breakIntoMultiline));
+}
+
+/**
+ * @param {string} string The string to repeat
+ * @param {number} n The number of times to repeat the string
+ * @returns {string} Returns the repeated string
+*/
+export function repeat(string : string, n : number) {
+  var result = '';
+  var MAX_SAFE_INTEGER = 9007199254740991;
+
+  if (!string || n < 1 || n > MAX_SAFE_INTEGER) {
+    return result;
+  }
+
+  do {
+    if (n % 2) {
+      result += string;
+    }
+    n = Math.floor(n / 2);
+    if (n) {
+      string += string;
+    }
+  } while (n);
+
+  return result;
 }

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "noEmitOnError": true,
+        "moduleResolution": "node",
+        "target": "ES5",
+        "outDir": "../lib"
+    },
+    "files": [
+        "convert.ts",
+        "cleaning.ts",
+        "index.ts",
+        "../typings/index.d.ts"
+    ]
+}

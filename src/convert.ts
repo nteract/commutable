@@ -1,12 +1,12 @@
 import { Map, List, fromJS } from 'immutable';
-import repeat from 'lodash.repeat';
+import { repeat } from './cleaning';
 
 /**
  * Dictionary of functions that perform upgrades.  The keys are the major
  * revision that the functions upgrade too.
  */
 const upgraders = {
-  4: function to4(nb) {
+  4: function to4(nb : Map<string, any>) {
     const mime_map = {
       text: 'text/plain',
       html: 'text/html',
@@ -18,15 +18,15 @@ const upgraders = {
       javascript: 'application/javascript',
     };
 
-    return nb
+    return nb 
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
       .set('nbformat', 4)
       .set('nbformat_minor', 0)
       .set('cells', nb
         .get('worksheets')
-        .reduce((a, b) => a.concat(b.get('cells')), new List())
+        .reduce((a, b) => a.concat(b.get('cells')), List<Map<string, any>>())
         .map(cell => {
-          const newCell = cell.set('metadata', new Map());
+        const newCell = cell.set('metadata', Map<string, any>());
           const cellType = newCell.get('cell_type');
           switch (cellType) {
             case 'code':
@@ -58,7 +58,7 @@ const upgraders = {
                             .delete('prompt_number');
                         }
                         output = output
-                          .update('metadata', new Map(), metadata => {
+                        .update('metadata', Map<string, any>(), metadata => {
                             const newMetadata = {};
                             metadata
                               .forEach((value, key) => {
@@ -75,7 +75,7 @@ const upgraders = {
                             return value;
                           })
                           .filter(value => Boolean(value))
-                          .set('data', new Map(data));
+                          .set('data', Map<string, any>(data));
                         if (output.hasIn(['data', 'application/json'])) {
                           output = output.setIn(['data', 'application/json'],
                                     JSON.parse(output
@@ -121,7 +121,7 @@ const upgraders = {
       .deleteIn(['metadata', 'name'])
       .deleteIn(['metadata', 'signature']);
   },
-  3: function to3(nb) {
+  3: function to3(nb : Map<string, any>) {
     return nb
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
       .set('nbformat', 3)
@@ -129,7 +129,7 @@ const upgraders = {
       .setIn(['worksheets', 'cels'], nb
         .getIn(['worksheets', 0, 'cells'])
         .map(cell => {
-          const newCell = cell.set('metadata', new Map());
+          const newCell = cell.set('metadata', Map<string, any>());
           return newCell;
         })
       );
@@ -137,7 +137,7 @@ const upgraders = {
 };
 
 
-export function upgrade(nb, fromMajor, toMajor) {
+export function upgrade(nb : Map<string, any>, fromMajor : number, toMajor : number) {
   if (toMajor < fromMajor) {
     throw new Error('cannot downgrade');
   }

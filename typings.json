@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "immutable": "registry:npm/immutable#3.7.6+20160411060006",
+    "uuid": "file:definitions/uuid.d.ts"
+  },
+  "globalDependencies": {
+    "node": "registry:env/node#4.0.0+20160507210304"
+  }
+}

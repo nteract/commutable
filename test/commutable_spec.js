@@ -19,7 +19,7 @@ import {
   updateExecutionCount,
   updateOutputs,
   clearCellOutput,
-} from '../src';
+} from '../lib';
 
 import { readJSON } from './notebook_helpers';
 import { valid } from 'notebook-test-data';
