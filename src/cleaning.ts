@@ -8,7 +8,7 @@ import {
  * @return {string} plain ol' string
  */
 function cleanMultiline(item : List<string>) {
-  return item.join('');
+  return item ? item.join('') : item;
 }
 
 /**
