@@ -1,5 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
-var repeat = require('lodash.repeat');
+import { repeat } from './cleaning';
 
 /**
  * Dictionary of functions that perform upgrades.  The keys are the major

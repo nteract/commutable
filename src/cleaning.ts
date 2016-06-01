@@ -92,7 +92,7 @@ export function makeMultilineNotebook(nb : Map<string, any>) {
  * @param {number} n The number of times to repeat the string
  * @returns {string} Returns the repeated string
 */
-function repeat(string : string, n : number) {A
+export function repeat(string : string, n : number) {
   var result = '';
   var MAX_SAFE_INTEGER = 9007199254740991;
 
