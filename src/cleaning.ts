@@ -7,7 +7,7 @@ import {
  * @param {List|string} item to join
  * @return {string} plain ol' string
  */
-function cleanMultiline(item : List<string>) {
+function cleanMultiline(item : (List<string> | string)) {
   return item ? item.join('') : item;
 }
 
