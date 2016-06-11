@@ -2,13 +2,23 @@ import {
   List,
   Map,
 } from 'immutable';
+
 /**
  * Concatenate all "multi-line" strings if item is a list
  * @param {List|string} item to join
  * @return {string} plain ol' string
  */
-function cleanMultiline(item : (List<string> | string)) {
-  return item instanceof List ? item.join('') : item;
+function cleanMultiline(item : List<string> | string) {
+  if (typeof item === 'string') {
+    return item;
+  }
+  else if (item instanceof List) {
+    return item.join('');
+  }
+  else if (item === undefined){
+    return '';
+  }
+  throw new Error(`Expected immutable.List or string, got ${item}`);
 }
 
 /**
