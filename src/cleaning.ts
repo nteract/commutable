@@ -52,7 +52,7 @@ function processOutputs(processor, outputs : Map<string, any>) {
   // If outputs is undefined, we just return it back
   return outputs ? outputs.map(output =>
     output.update('text', processor)
-          .update('data', processOutputData.bind(this, processor))
+          .update('data', processOutputData.bind(null, processor))
   ) : outputs;
 }
 
@@ -64,7 +64,7 @@ function processOutputs(processor, outputs : Map<string, any>) {
  */
 function processCell(processor, cell : Map<string, any>) {
   return cell.update('source', processor)
-             .update('outputs', processOutputs.bind(this, processor));
+             .update('outputs', processOutputs.bind(null, processor));
 }
 
 /**
@@ -74,7 +74,7 @@ function processCell(processor, cell : Map<string, any>) {
  * @return {Map} cell without multi-line strings
  */
 function processCells(processor, cells : List<Map<string, any>>) {
-  return cells.map(processCell.bind(this, processor));
+  return cells.map(processCell.bind(null, processor));
 }
 
 /**
@@ -83,7 +83,7 @@ function processCells(processor, cells : List<Map<string, any>>) {
  * @return {Map} notebook without multi-line strings
  */
 export function cleanMultilineNotebook(nb : Map<string, any>) {
-  return nb.update('cells', processCells.bind(this, cleanMultiline));
+  return nb.update('cells', processCells.bind(null, cleanMultiline));
 }
 
 
@@ -94,7 +94,7 @@ export function cleanMultilineNotebook(nb : Map<string, any>) {
  * @return {Map} nb
  */
 export function makeMultilineNotebook(nb : Map<string, any>) {
-  return nb.update('cells', processCells.bind(this, breakIntoMultiline));
+  return nb.update('cells', processCells.bind(null, breakIntoMultiline));
 }
 
 /**
