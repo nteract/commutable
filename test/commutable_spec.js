@@ -15,6 +15,7 @@ import {
   appendCell,
   removeCell,
   removeCellAt,
+  splitCell,
   updateSource,
   updateExecutionCount,
   updateOutputs,
@@ -299,5 +300,19 @@ describe('clearCellOutput', () => {
                   new Immutable.List([output])),
                 id);
     expect(nb.getIn(['cellMap', id, 'outputs'])).to.equal(Immutable.List.of());
+  });
+});
+
+describe('splitCell', () => {
+  it('splits a give cell into two', () => {
+    let nb = emptyNotebook;
+    const cellID = uuid();
+    nb = appendCell(nb, emptyCodeCell.set('source', 'print("TEST")'), cellID);
+    nb = splitCell(nb, cellID, 3); 
+    const newCellID = nb.get('cellOrder').last();
+
+    expect(nb.get('cellOrder').count()).to.equal(2);
+    expect(nb.getIn(['cellMap', cellID, 'source'])).to.equal('pri');
+    expect(nb.getIn(['cellMap', newCellID, 'source'])).to.equal('nt("TEST")');
   });
 });
