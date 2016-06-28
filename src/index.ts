@@ -199,3 +199,24 @@ export function removeCell(notebook : Map<string, any>, cellId : string) {
 export function removeCellAt(notebook : Map<string, any>, index : number) {
   return removeCell(notebook, notebook.getIn(['cellOrder', index]));
 }
+
+/**
+ * Splits a given cell into two cells at the given position.
+ * @param {Map<string, any>} notebook - the notebook in its Map representation
+ * @param {string} cellID - A UUID given to the cell to be split
+ * @param {number} position - The position in the source to split at
+ */
+ export function splitCell(notebook : Map<string, any>, cellID : string, position : number) {
+  const cell = notebook.getIn(['cellMap', cellID]);
+const cellSource = cell.get('source');
+const first = cellSource.slice(0, position);
+
+  const second = cellSource.slice(position, cellSource.length);
+  const newCell = emptyCodeCell.set('source', second);
+  const newCellID = uuid();
+
+  return notebook
+    .setIn(['cellMap', cellID, 'source'], first)
+    .setIn(['cellMap', newCellID], newCell)
+    .set('cellOrder', notebook.get('cellOrder').push(newCellID));
+}
