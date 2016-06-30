@@ -187,6 +187,18 @@ describe('appendCell', () => {
                       'source'])).to.equal('Yay');
 
   });
+  it('append a cell to the end of a notebook when not given an id', () => {
+    const nb = appendCell(emptyNotebook, emptyCodeCell);
+    const nb2 = appendCell(nb, emptyCodeCell.set('source', 'Yay'));
+
+    console.log(nb2);
+
+    expect(nb2.get('cellOrder').size).to.equal(2);
+    expect(nb2.get('cellMap').size).to.equal(2);
+
+    expect(nb2.getIn(['cellOrder', 0])).to.be.a('string');
+    expect(nb2.getIn(['cellOrder', 1])).to.be.a('string');
+  });
 });
 
 describe('removeCellAt', () => {
