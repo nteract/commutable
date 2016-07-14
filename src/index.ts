@@ -208,8 +208,8 @@ export function removeCellAt(notebook : Map<string, any>, index : number) {
  */
  export function splitCell(notebook : Map<string, any>, cellID : string, position : number) {
   const cell = notebook.getIn(['cellMap', cellID]);
-const cellSource = cell.get('source');
-const first = cellSource.slice(0, position);
+  const cellSource = cell.get('source');
+  const first = cellSource.slice(0, position);
 
   const second = cellSource.slice(position, cellSource.length);
   const newCell = emptyCodeCell.set('source', second);

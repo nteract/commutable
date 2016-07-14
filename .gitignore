@@ -33,3 +33,6 @@ Untitled.ipynb
 
 # Don't include the typings folder which is part of the build
 typings/
+
+# Don't include auto-generated docs
+docs/
