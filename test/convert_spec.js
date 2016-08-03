@@ -7,7 +7,8 @@ import * as fs from 'fs';
 
 const nb2 = fromJS(JSON.parse(fs.readFileSync(valid.v2.v2notebook)));
 const nb3 = fromJS(JSON.parse(fs.readFileSync(valid.v3.v3notebook)));
-const nb4 = fromJS(JSON.parse(fs.readFileSync(valid.v4.v4notebook)));
+console.log(valid['v4.1']);
+const nb4 = fromJS(JSON.parse(fs.readFileSync(valid['v4.1'].v4notebook)));
 
 describe('upgrade', () => {
   it('3to4', () => {

@@ -57,7 +57,7 @@
     "jsdoc": "^3.4.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.3.4",
-    "notebook-test-data": "0.0.2",
+    "notebook-test-data": "1.0.1",
     "nyc": "^6.4.4",
     "rimraf": "^2.5.0",
     "typings": "^1.0.4",
