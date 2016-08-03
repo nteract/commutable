@@ -21,7 +21,7 @@ const upgraders = {
     return nb 
       .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
       .set('nbformat', 4)
-      .set('nbformat_minor', 0)
+      .set('nbformat_minor', 1)
       .set('cells', nb
         .get('worksheets')
         .reduce((a, b) => a.concat(b.get('cells')), List<Map<string, any>>())
