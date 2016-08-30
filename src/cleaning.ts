@@ -8,7 +8,7 @@ import {
  * @param {List|string} item to join
  * @return {string} plain ol' string
  */
-function cleanMultiline(item : List<string> | string) {
+function cleanMultiline(item : List<string> | string | Map<string, any>) {
   if (typeof item === 'string') {
     return item;
   }
@@ -18,7 +18,8 @@ function cleanMultiline(item : List<string> | string) {
   else if (item === undefined){
     return '';
   }
-  throw new Error(`Expected immutable.List or string, got ${item}`);
+  return item;
+
 }
 
 /**
