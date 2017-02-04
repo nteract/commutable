@@ -52,7 +52,7 @@
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-babel": "^4.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
     "jsdoc": "^3.4.3",
     "mkdirp": "^0.5.1",
