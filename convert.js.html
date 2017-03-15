@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: convert.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: convert.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var immutable_1 = require("immutable");
+var cleaning_1 = require("./cleaning");
+/**
+ * Dictionary of functions that perform upgrades.  The keys are the major
+ * revision that the functions upgrade too.
+ */
+var upgraders = {
+    4: function to4(nb) {
+        var mime_map = {
+            text: 'text/plain',
+            html: 'text/html',
+            svg: 'image/svg+xml',
+            png: 'image/png',
+            jpeg: 'image/jpeg',
+            latex: 'text/latex',
+            json: 'application/json',
+            javascript: 'application/javascript',
+        };
+        return nb
+            .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 3))
+            .set('nbformat', 4)
+            .set('nbformat_minor', 1)
+            .set('cells', nb
+            .get('worksheets')
+            .reduce(function (a, b) { return a.concat(b.get('cells')); }, immutable_1.List())
+            .map(function (cell) {
+            var newCell = cell.set('metadata', immutable_1.Map());
+            var cellType = newCell.get('cell_type');
+            switch (cellType) {
+                case 'code':
+                    return newCell
+                        .setIn(['metadata', 'collapsed'], newCell.get('collapsed'))
+                        .delete('collapsed')
+                        .delete('language')
+                        .set('source', newCell.get('input', ''))
+                        .delete('input')
+                        .set('execution_count', newCell.get('prompt_number'))
+                        .delete('prompt_number')
+                        .update('outputs', function (outputs) {
+                        return outputs.map(function (initialOutput) {
+                            var data = {};
+                            var output = initialOutput;
+                            switch (output.get('output_type')) {
+                                case 'pyerr':
+                                    return output.set('output_type', 'error');
+                                case 'stream':
+                                    return output
+                                        .set('name', output.get('stream', 'stdout'))
+                                        .delete('stream');
+                                case 'pyout':
+                                case 'display_data':
+                                    if (output.get('output_type') === 'pyout') {
+                                        output = output
+                                            .set('output_type', 'execute_result')
+                                            .set('execution_count', output.get('prompt_number'))
+                                            .delete('prompt_number');
+                                    }
+                                    output = output
+                                        .update('metadata', immutable_1.Map(), function (metadata) {
+                                        var newMetadata = {};
+                                        metadata
+                                            .forEach(function (value, key) {
+                                            newMetadata[mime_map[key] || key] = value;
+                                        });
+                                        return immutable_1.fromJS(newMetadata);
+                                    })
+                                        .map(function (value, key) {
+                                        if (['output_type', 'execution_count', 'metadata']
+                                            .indexOf(key) === -1) {
+                                            data[mime_map[key] || key] = value;
+                                            return null;
+                                        }
+                                        return value;
+                                    })
+                                        .filter(function (value) { return Boolean(value); })
+                                        .set('data', immutable_1.Map(data));
+                                    if (output.hasIn(['data', 'application/json'])) {
+                                        output = output.setIn(['data', 'application/json'], JSON.parse(output
+                                            .getIn(['data', 'application/json'])
+                                            .toJS()));
+                                    }
+                                    // promote ascii bytes (from v2) to unicode
+                                    ['image/png', 'image/jpeg'].forEach(function (imageMimetype) {
+                                        var imageData = output.getIn(['data', imageMimetype]);
+                                        if (imageData) {
+                                            imageData = imageData
+                                                .trim()
+                                                .split('\n')
+                                                .map(function (x) { return x + "\n"; });
+                                            output = output.setIn(['data', imageMimetype], imageData);
+                                        }
+                                    });
+                                    return output;
+                                default:
+                                    return initialOutput;
+                            }
+                        });
+                    });
+                case 'heading':
+                    return newCell
+                        .set('cell_type', 'markdown')
+                        .set('source', [
+                        cleaning_1.repeat('#', newCell.get('level', 1)),
+                        newCell.get('source', '').join(' '),
+                    ].join(' ')
+                        .split('\n'))
+                        .delete('level');
+                case 'html':
+                    return newCell.set('cell_type', 'markdown');
+                default:
+                    return newCell;
+            }
+        }))
+            .delete('worksheets')
+            .deleteIn(['metadata', 'name'])
+            .deleteIn(['metadata', 'signature']);
+    },
+    3: function to3(nb) {
+        return nb
+            .setIn(['metadata', 'orig_nbformat'], nb.getIn(['metadata', 'orig_nbformat'], 2))
+            .set('nbformat', 3)
+            .set('nbformat_minor', 0)
+            .setIn(['worksheets', 'cels'], nb
+            .getIn(['worksheets', 0, 'cells'])
+            .map(function (cell) {
+            var newCell = cell.set('metadata', immutable_1.Map());
+            return newCell;
+        }));
+    },
+};
+function upgrade(nb, fromMajor, toMajor) {
+    if (toMajor &lt; fromMajor) {
+        throw new Error('cannot downgrade');
+    }
+    var currentMajor = fromMajor;
+    var tmpnb = nb;
+    while (currentMajor &lt; toMajor) {
+        var upgrader = upgraders[++currentMajor];
+        if (upgrader) {
+            tmpnb = upgrader(tmpnb);
+        }
+        else {
+            throw new Error("upgrade path from " + (currentMajor - 1) + " to " + fromMajor + " unknown");
+        }
+    }
+    return tmpnb;
+}
+exports.upgrade = upgrade;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#appendCell">appendCell</a></li><li><a href="global.html#breakIntoMultiline">breakIntoMultiline</a></li><li><a href="global.html#cleanMultiline">cleanMultiline</a></li><li><a href="global.html#cleanMultilineNotebook">cleanMultilineNotebook</a></li><li><a href="global.html#clearCellOutput">clearCellOutput</a></li><li><a href="global.html#emptyCodeCell">emptyCodeCell</a></li><li><a href="global.html#emptyMarkdownCell">emptyMarkdownCell</a></li><li><a href="global.html#emptyNotebook">emptyNotebook</a></li><li><a href="global.html#fromJS">fromJS</a></li><li><a href="global.html#insertCellAfter">insertCellAfter</a></li><li><a href="global.html#insertCellAt">insertCellAt</a></li><li><a href="global.html#makeMultilineNotebook">makeMultilineNotebook</a></li><li><a href="global.html#processCell">processCell</a></li><li><a href="global.html#processCells">processCells</a></li><li><a href="global.html#processOutputData">processOutputData</a></li><li><a href="global.html#processOutputs">processOutputs</a></li><li><a href="global.html#removeCell">removeCell</a></li><li><a href="global.html#removeCellAt">removeCellAt</a></li><li><a href="global.html#repeat">repeat</a></li><li><a href="global.html#splitCell">splitCell</a></li><li><a href="global.html#toJS">toJS</a></li><li><a href="global.html#updateExecutionCount">updateExecutionCount</a></li><li><a href="global.html#updateOutputs">updateOutputs</a></li><li><a href="global.html#updateSource">updateSource</a></li><li><a href="global.html#upgraders">upgraders</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 15 2017 16:43:04 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

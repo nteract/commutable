@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>com·mut·a·ble</h1><p><a href="https://greenkeeper.io/"><img src="https://badges.greenkeeper.io/nteract/commutable.svg" alt="Greenkeeper badge"></a>
+<a href="https://travis-ci.org/nteract/commutable"><img src="https://travis-ci.org/nteract/commutable.svg?branch=master" alt="Build Status"></a>
+<a href="https://codecov.io/gh/nteract/commutable"><img src="https://codecov.io/gh/nteract/commutable/branch/master/graph/badge.svg" alt="codecov"></a></p>
+<blockquote>
+<p>/kəˈmyo͞otəbəl/</p>
+<ol>
+<li>(of a place or journey) allowing regular commuting to and from work.</li>
+<li><strong>capable of being exchanged or converted.</strong></li>
+</ol>
+</blockquote>
+<p><code>commutable</code> is a library for Jupyter Notebook operations, helping to enable
+history stored as a series of immutable notebooks.</p>
+<h2>Principles</h2><ul>
+<li><strong>A notebook document is immutable</strong>. It is never mutated in-place.</li>
+<li>Changes to a notebook document are encapsulated into <strong>operations</strong> that take a previous version and return a new one.</li>
+<li>History is represented as a <strong>list of states</strong>, with past on one end, the present on the other, and an index that can back up into 'undo states'.</li>
+<li>Modifying a notebook document causes any <strong>future states to be thrown away</strong>.</li>
+</ul>
+<p>Credits to <a href="http://www.macwright.org/2015/05/18/practical-undo.html">Tom MacWright</a> for the outline.</p>
+<h2>Installation</h2><pre class="prettyprint source"><code>npm install --save commutable</code></pre><h2>Usage</h2><h3>Fresh notebook</h3><pre class="prettyprint source lang-js"><code>> const uuid = require('uuid').v4
+undefined
+> const commutable = require('.')
+undefined
+> nb = commutable.emptyNotebook
+Map { &quot;cellOrder&quot;: List [], &quot;nbformat&quot;: 4, &quot;nbformat_minor&quot;: 0, &quot;cellMap&quot;: Map {} }
+
+> cellID = uuid()
+'d50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b'
+
+> nb2 = commutable.appendCell(nb, commutable.emptyCodeCell, cellID)
+> nb2.toJS()
+{ cellOrder: [ 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b' ],
+  nbformat: 4,
+  nbformat_minor: 0,
+  cellMap:
+   { 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: '',
+        outputs: [] } } }
+
+> nb3 = commutable.appendCell(nb2,
+... commutable.emptyCodeCell.set('source', 'import random\nrandom.random()'), uuid())
+> nb3.toJS()
+{ cellOrder:
+   [ 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b',
+     '8d40321c-87c0-4d86-900c-2174f6920969' ],
+  nbformat: 4,
+  nbformat_minor: 0,
+  cellMap:
+   { 'd50dbdd5-1af0-4c8d-90fb-ae9ed9ff6c9b':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: '',
+        outputs: [] },
+     '8d40321c-87c0-4d86-900c-2174f6920969':
+      { cell_type: 'code',
+        execution_count: null,
+        metadata: [Object],
+        source: 'import random\nrandom.random()',
+        outputs: [] } } }</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#appendCell">appendCell</a></li><li><a href="global.html#breakIntoMultiline">breakIntoMultiline</a></li><li><a href="global.html#cleanMultiline">cleanMultiline</a></li><li><a href="global.html#cleanMultilineNotebook">cleanMultilineNotebook</a></li><li><a href="global.html#clearCellOutput">clearCellOutput</a></li><li><a href="global.html#emptyCodeCell">emptyCodeCell</a></li><li><a href="global.html#emptyMarkdownCell">emptyMarkdownCell</a></li><li><a href="global.html#emptyNotebook">emptyNotebook</a></li><li><a href="global.html#fromJS">fromJS</a></li><li><a href="global.html#insertCellAfter">insertCellAfter</a></li><li><a href="global.html#insertCellAt">insertCellAt</a></li><li><a href="global.html#makeMultilineNotebook">makeMultilineNotebook</a></li><li><a href="global.html#processCell">processCell</a></li><li><a href="global.html#processCells">processCells</a></li><li><a href="global.html#processOutputData">processOutputData</a></li><li><a href="global.html#processOutputs">processOutputs</a></li><li><a href="global.html#removeCell">removeCell</a></li><li><a href="global.html#removeCellAt">removeCellAt</a></li><li><a href="global.html#repeat">repeat</a></li><li><a href="global.html#splitCell">splitCell</a></li><li><a href="global.html#toJS">toJS</a></li><li><a href="global.html#updateExecutionCount">updateExecutionCount</a></li><li><a href="global.html#updateOutputs">updateOutputs</a></li><li><a href="global.html#updateSource">updateSource</a></li><li><a href="global.html#upgraders">upgraders</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 15 2017 16:43:04 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

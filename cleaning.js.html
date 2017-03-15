@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: cleaning.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: cleaning.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var immutable_1 = require("immutable");
+/**
+ * Concatenate all "multi-line" strings if item is a list
+ * @param {List|string} item to join
+ * @return {string} plain ol' string
+ */
+function cleanMultiline(item) {
+    if (typeof item === 'string') {
+        return item;
+    }
+    else if (item instanceof immutable_1.List) {
+        return item.join('');
+    }
+    else if (item === undefined) {
+        return '';
+    }
+    return item;
+}
+/**
+ * Break all "multi-line" strings into a list
+ * @param {List|string} item to join
+ * @return {string} plain ol' string
+ */
+function breakIntoMultiline(item) {
+    // Use positive lookahead regex to split on newline and retain newline char
+    return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(function (x) { return x !== ''; }) : item;
+}
+/**
+ * Concatenate all "multi-line" strings from a cell's data section
+ * @param {Function} processor, map function applied to values
+ * @param {Map} data display data possibly in need of cleaning
+ * @return {Map} display data without multi-line strings
+ */
+function processOutputData(processor, data) {
+    // If data is undefined, we just return it back
+    return data ? data.map(processor) : data;
+}
+/**
+ * Concatenate all "multi-line" strings from a cell's outputs
+ * @param {Function} processor, map function applied to values
+ * @param {Map} outputs a cell's outputs
+ * @return {Map} cell outputs without multi-line strings
+ */
+function processOutputs(processor, outputs) {
+    // If outputs is undefined, we just return it back
+    return outputs ? outputs.map(function (output) {
+        return output.update('text', processor)
+            .update('data', processOutputData.bind(null, processor));
+    }) : outputs;
+}
+/**
+ * Concatenate all "multi-line" strings from a cell (on disk -> in-mem format)
+ * @param {Function} processor, map function applied to values
+ * @param {Map} cell the cell to clean up
+ * @return {Map} cell without multi-line strings
+ */
+function processCell(processor, cell) {
+    return cell.update('source', processor)
+        .update('outputs', processOutputs.bind(null, processor));
+}
+/**
+ * Concatenate all "multi-line" strings from a cell
+ * @param {Function} processor, map function applied to values
+ * @param {List} cells the cell to clean up
+ * @return {Map} cell without multi-line strings
+ */
+function processCells(processor, cells) {
+    return cells.map(processCell.bind(null, processor));
+}
+/**
+ * Concatenate all "multi-line" strings from a notebook (on disk format -> in-memory)
+ * @param {Map} nb notebook
+ * @return {Map} notebook without multi-line strings
+ */
+function cleanMultilineNotebook(nb) {
+    return nb.update('cells', processCells.bind(null, cleanMultiline));
+}
+exports.cleanMultilineNotebook = cleanMultilineNotebook;
+/**
+ * Breaks long lines of the notebook into multiple lines to make opening the
+ * JSON files in a text editor directly a better experience.
+ * @param  {Map} nb
+ * @return {Map} nb
+ */
+function makeMultilineNotebook(nb) {
+    return nb.update('cells', processCells.bind(null, breakIntoMultiline));
+}
+exports.makeMultilineNotebook = makeMultilineNotebook;
+/**
+ * @param {string} string The string to repeat
+ * @param {number} n The number of times to repeat the string
+ * @returns {string} Returns the repeated string
+*/
+function repeat(string, n) {
+    var result = '';
+    var MAX_SAFE_INTEGER = 9007199254740991;
+    if (!string || n &lt; 1 || n > MAX_SAFE_INTEGER) {
+        return result;
+    }
+    do {
+        if (n % 2) {
+            result += string;
+        }
+        n = Math.floor(n / 2);
+        if (n) {
+            string += string;
+        }
+    } while (n);
+    return result;
+}
+exports.repeat = repeat;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#appendCell">appendCell</a></li><li><a href="global.html#breakIntoMultiline">breakIntoMultiline</a></li><li><a href="global.html#cleanMultiline">cleanMultiline</a></li><li><a href="global.html#cleanMultilineNotebook">cleanMultilineNotebook</a></li><li><a href="global.html#clearCellOutput">clearCellOutput</a></li><li><a href="global.html#emptyCodeCell">emptyCodeCell</a></li><li><a href="global.html#emptyMarkdownCell">emptyMarkdownCell</a></li><li><a href="global.html#emptyNotebook">emptyNotebook</a></li><li><a href="global.html#fromJS">fromJS</a></li><li><a href="global.html#insertCellAfter">insertCellAfter</a></li><li><a href="global.html#insertCellAt">insertCellAt</a></li><li><a href="global.html#makeMultilineNotebook">makeMultilineNotebook</a></li><li><a href="global.html#processCell">processCell</a></li><li><a href="global.html#processCells">processCells</a></li><li><a href="global.html#processOutputData">processOutputData</a></li><li><a href="global.html#processOutputs">processOutputs</a></li><li><a href="global.html#removeCell">removeCell</a></li><li><a href="global.html#removeCellAt">removeCellAt</a></li><li><a href="global.html#repeat">repeat</a></li><li><a href="global.html#splitCell">splitCell</a></li><li><a href="global.html#toJS">toJS</a></li><li><a href="global.html#updateExecutionCount">updateExecutionCount</a></li><li><a href="global.html#updateOutputs">updateOutputs</a></li><li><a href="global.html#updateSource">updateSource</a></li><li><a href="global.html#upgraders">upgraders</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 15 2017 16:43:04 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
