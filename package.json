@@ -47,7 +47,7 @@
     "chai": "^3.4.1",
     "chai-immutable": "^1.5.3",
     "chalk": "^1.1.1",
-    "codecov": "^1.0.1",
+    "codecov": "^2.0.1",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-babel": "^4.0.0",
