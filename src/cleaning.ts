@@ -1,18 +1,19 @@
 import {
   List,
   Map,
+  Iterable,
 } from 'immutable';
 
 /**
  * Concatenate all "multi-line" strings if item is a list
- * @param {List|string} item to join
- * @return {string} plain ol' string
+ * @param {List<string>|Map<string,any>|Array<string>|string} item to join
+ * @return {string|Map<string,any>} string if a string or list of strings, passes regular objects through
  */
-function cleanMultiline(item : List<string> | string | Map<string, any>) {
+function cleanMultiline(item : any): string {
   if (typeof item === 'string') {
     return item;
   }
-  else if (item instanceof List) {
+  else if (Array.isArray(item) || List.isList(item)) {
     return item.join('');
   }
   else if (item === undefined){
@@ -27,7 +28,7 @@ function cleanMultiline(item : List<string> | string | Map<string, any>) {
  * @param {List|string} item to join
  * @return {string} plain ol' string
  */
- function breakIntoMultiline(item : (List<string> | string)) {
+ function breakIntoMultiline(item : (List<string> | string), key: string) {
   // Use positive lookahead regex to split on newline and retain newline char
   return typeof item === 'string' ? item.split(/(.+?(?:\r\n|\n))/g).filter(x => x !== '') : item;
 }

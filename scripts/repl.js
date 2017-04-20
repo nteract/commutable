@@ -1,6 +1,6 @@
 require.extensions['.ipynb'] = require.extensions['.json'];
 global.commutable = require('..');
-global.toyNotebook = require('../test/multiples.ipynb');
+global.toyNotebook = require('../node_modules/notebook-test-data/notebooks/4.1/multiples.ipynb');
 
 (() => {
   const chalk = require('chalk');
