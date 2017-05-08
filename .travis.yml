@@ -1,12 +1,3 @@
 language: node_js
-node_js:
-- '4.1'
-- '5.1'
-sudo: false
-script:
-- npm test
-after_success:
-- bash ./travis_after_success.sh
-env:
-  global:
-    secure: TDGZq+LZvDZgHVOE8OLGBTtdidsSpDmtLmpwyAQC+ogu0gHUYSZ+13baJuD8uUDqYrmc0IQUXN1qG2hksCh30L94iR43LxRGfxZqfkBKhVBzmxCw8i71VcPCsG0/tjSQlUo69TqAajektEnxHeHB1dLNgys9HzhgisO1D+W3DEwTjMoCmcXe0e7SdCnpO14R0XlhQHKAc6Rtqe5I8MFe4wImzSplUzWxHI8/h3k6NO69uwiZzylLNG6jyEuWNI/dGfuTPgFF0UUkutqBbelyaRL9V/mX7rT+8K6KRtM8Y3+P0MCyP90pOGl3nzufSJgPp+vrUL8wWD9hoq0WVQZr3imb9aiM7edQP+cLJWJtkofL8bJ9PhH2LNdrSsYqNN6xqoxa+fuoywSE0hQG3jueanDkbLuNoh8TAIz1WWzaTLt0yZl8EL+edUW3Cv2lrkZrpkhOIF3OCv0I/jW+F0nPIFyjKuXpHbj1kjS4EmBNt/25FHwVhwSOC86uPP2E74ZybxjmyzEUoIpekFJUaxcsS9Yze2ho/2dB7Lo3AlwGaJjb2v1wEuJxPUzDmKUiwFOHKgnRuUbvB3r1c3TUN4p+/dtBtDT+VSfUWrJzaNGxmdYTqBVi/F9ns6SCppFRoizHenbSVRs/7pGpAxBM2mdNSRXtkBxxgh1wWlgNk/r2dP8=
+
+script: echo "commuting"
